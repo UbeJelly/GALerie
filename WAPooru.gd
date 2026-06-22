@@ -14,22 +14,51 @@ var blobs: Array = []				# List of img blobs to use as texture
 var waifu: PackedStringArray = []	# List of waifu image cache paths
 
 var files_path: String = OS.get_system_dir(OS.SYSTEM_DIR_DOCUMENTS)+"/WAPooru"
-var waifu_path: String = files_path+"/Waifus"				## The download directory
-var cache_path: String = OS.get_user_data_dir()+"/cache"	## Caches to %AppData%/Roaming/WAPooru
-var saves_path: String = cache_path+"/ImgList"				## Save file path
+var waifu_path: String = files_path+"/Waifus"								## The download directory
+var cache_path: String = OS.get_user_data_dir()+"/cache"					## Caches to %AppData%/Roaming/WAPooru
+var saves_path: String = cache_path+"/ImgList"								## Save file path
 
-@export var git_url := "https://api.github.com/repos/cat-milk/Anime-Girls-Holding-Programming-Books/git"
-@export var headers := ["Accept: image/avif,image/webp,image/png,image/svg+xml,image/*;q=0.8,*/*;q=0.5"]
+## Path of auth.json which contains data of repo owner and API token
+var _AUTH_PATH: String = ProjectSettings.globalize_path("res://.env/%s")	
+
+var git_url := "https://api.github.com/repos/%s/Anime-Girls-Holding-Programming-Books/git"
+var headers := [
+	"Accept: image/avif,image/webp,image/png,image/svg+xml,image/*;q=0.8,*/*;q=0.5",
+	"Authorization: Bearer %s"
+]
 
 @export_category("Terminal")
 @export var print_data := true			## Show or hide the requested data.
 @export var print_image_files := true	## Prints the loaded image files.
 
 @onready var languages: VBoxContainer = $%Languages
+@onready var catalog: ScrollContainer = $%Catalog
 @onready var waifus: HFlowContainer = $%Waifus
 #endregion
 
+
+func _set_auth(auth_file: String) -> void:
+	var data: String = FileAccess.get_file_as_string(_AUTH_PATH % auth_file)
+	var auth: Dictionary = JSON.parse_string(data)
+	git_url = git_url % auth["owner"]
+	headers[1] = headers[1] % auth["token"]
+
+
+func _get_auth() -> String:
+	var JSON_file_name := ""
+	var dir = DirAccess.open(_AUTH_PATH % "")
+	if dir:
+		for file in dir.get_files():
+			if file.get_extension().to_lower() == "json":
+				JSON_file_name = file
+	else:
+		print("An error occurred when trying to access the path.")
+	return JSON_file_name
+
+
 func _ready() -> void:
+	_set_auth(_get_auth())
+
 	if not Engine.is_editor_hint():
 		_init_directory(cache_path)
 
@@ -43,7 +72,7 @@ func _ready() -> void:
 
 		set_waifu_thumbnails(i_url)
 
-
+#region API calls
 ## The main function that requests various endpoints.
 ## [param url] is the main url that hosts the API.
 ## [param endpoint] is the request endpoint, e.g. /trees/master.
@@ -79,8 +108,9 @@ func get_language(endpoint: String) -> void:
 func get_waifu_blob(endpoint: String) -> void:
 	query = Get.IMG
 	WAPooruClient(git_url, endpoint, "get_waifu_blob")
+#endregion
 
-
+#region Load GUI
 ## Creates the languages buttons, then sets as children of Languages node.
 ## [param list] is an array of objects that contains the path and url of a language.
 func set_langs_buttons(list: Array) -> void:
@@ -155,6 +185,7 @@ func set_thumbnail_texture(index: int) -> void:
 		if not imagetexture == null:
 			var texture = imagetexture
 			var thumbnail := TextureButton.new()
+			var thumbnail_texture := TextureRect.new()
 
 			# Save images as resource to load by valid resource paths
 			var image_name: String = i_url[i_url.find(blobs[index]["url"])]["path"]
@@ -166,16 +197,24 @@ func set_thumbnail_texture(index: int) -> void:
 			thumbnail.mouse_entered.connect(_on_thumbnail_hovered.bind(thumbnail))
 			thumbnail.mouse_exited.connect(_on_thumbnail_unhover.bind(thumbnail))
 
-			thumbnail.texture_normal = texture
+			thumbnail.clip_contents = true
+			thumbnail.clip_children = CanvasItem.CLIP_CHILDREN_AND_DRAW
+			thumbnail.custom_minimum_size = Vector2((catalog.size.x/3)-10, (catalog.size.y/3)-10)
+
+			thumbnail_texture.texture = texture
 			#thumbnail.name = img_file
-			thumbnail.ignore_texture_size = true
-			thumbnail.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_COVERED
-			thumbnail.custom_minimum_size = Vector2((waifus.size.x/3)-10, (waifus.size.y/3)-10)
+			thumbnail_texture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			thumbnail_texture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+			thumbnail_texture.custom_minimum_size = Vector2((catalog.size.x/3)-10, (catalog.size.y/3)-10)
+			thumbnail_texture.pivot_offset = Vector2(thumbnail_texture.custom_minimum_size.x/2, thumbnail_texture.custom_minimum_size.y/2)
+			thumbnail_texture.set_anchors_preset(Control.PRESET_FULL_RECT)
 			thumbnail.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+
+			thumbnail.add_child(thumbnail_texture, true)
 			waifus.add_child(thumbnail, true)
+#endregion
 
-
-#region
+#region Lists
 ## Gets a list of langs trees (i.e. main dir). Use to save to trees[].
 ## [param data] is the object to get and check items from.
 func get_trees(data: Dictionary) -> Array:
@@ -203,7 +242,6 @@ func get_waifu(data: Dictionary) -> Dictionary:
 	return { "url": data.get("url"), "content": data.get("content") }
 #endregion
 
-
 func _on_request_completed(_result: int, _response_code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
 	var data = parse_JSON(body)
 	if not data == null:
@@ -218,31 +256,40 @@ func _on_request_completed(_result: int, _response_code: int, _headers: PackedSt
 
 
 ## Signal when a language button is pressed. get_language() then sends a request to get available images from the language.
+## [param url] is the url of the languages to get waifu images from.
 func _on_langs_btn_pressed(url: String) -> void:
+	i_url = []
+	blobs = []
+	for thumbnail in waifus.get_children():
+		thumbnail.queue_free()
 	var endpoint := url.trim_prefix(git_url)
 	get_language(endpoint)
+	await request_completed
+	set_waifu_thumbnails(i_url)
 
 
+## TODO: Separate texture to a sub-node and set its custom min size
+## TODO: Save image based from its ImageTexture > Image data into its proper format.
 @warning_ignore("unused_parameter")
 func _on_thumbnail_pressed(texture_path: String, file_path: String) -> void:
 	@warning_ignore("unused_variable")
 	var options: Dictionary = { "name": file_path.get_file(), "file": file_path }
 
 
+## TODO: Show a small popup that shows its waifu's name and programming language.
 @warning_ignore("unused_parameter")
 func _on_thumbnail_hovered(button: TextureButton) -> void:
-	#button.z_index = 1
-	#var tween: Tween = create_tween()
-	#tween.tween_property(button, "scale", Vector2(1.15, 1.15), 0.05)
-	pass
+	var tween: Tween = create_tween()
+	tween.tween_property(button.get_child(0), "self_modulate", Color(1.125, 1.125, 1.125, 1.0), 0.15).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(button.get_child(0), "scale", Vector2(1.125, 1.125), 0.15).set_ease(Tween.EASE_IN_OUT)
 
 
+## TODO: Hide the small popup.
 @warning_ignore("unused_parameter")
 func _on_thumbnail_unhover(button: TextureButton) -> void:
-	#button.z_index = 0
-	#var tween: Tween = create_tween()
-	#tween.tween_property(button, "scale", Vector2(1.0, 1.0), 0.05)
-	pass
+	var tween: Tween = create_tween()
+	tween.tween_property(button.get_child(0), "self_modulate", Color(1.0, 1.0, 1.0, 1.0), 0.15).set_ease(Tween.EASE_OUT_IN)
+	tween.tween_property(button.get_child(0), "scale", Vector2(1.0, 1.0), 0.15).set_ease(Tween.EASE_OUT_IN)
 
 
 ## Initializes the directory for images.

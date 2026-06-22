@@ -9,14 +9,27 @@ Fetches images of anime girls with programming books from https://github.com/cat
 
 ## Process
 
-> [!WARNING]  
-> Primary rate limit for unauthenticated requests is 60 requests per hour.  
-> If you need to debug continuously, make sure to have a save file first or simply have authenticated requests by including your Github tokens on headers.  
-> https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api
-
 It basically requests the blob files through the entire repo, so we get `PackedByteArray` buffers which are then converted into readable `ImageTextures`.
 
 This means that it doesn't really download the images to any folder.
+
+## Testing
+
+Because unauthenticated requests have a rate limit of 60 requests per hour, a Personal Access Token is needed for authenticated requests which allow 5,000 requests per hour.  
+(see [Rate limits for the REST API](https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api?apiVersion=2026-03-10#primary-rate-limit-for-authenticated-users))
+
+To setup this project for testing, follow these steps:
+1. Make your own fork of https://github.com/cat-milk/Anime-Girls-Holding-Programming-Books
+2. Then, generate your Github Personal Access Token: https://github.com/settings/personal-access-tokens
+3. Set the name, description, and expiration of your token.  
+    1. Under the *Repository access* section, choose **Only select repositories** and select your fork earlier.
+    2. Under the *Permissions* section, add permissions **Content** and **Metadata**
+    3. Finally, generate your token. DO NOT CLOSE THE BROWSER TAB/WINDOW YET.
+4. In this project's folder, add a new folder *.env*, and within it add a JSON file of any name, e.g. *auth.json*.
+5. Add `{"owner":<YOUR GITHUB USERNAME>, "token":<YOUR TOKEN>}`
+6. Just copy-paste your username and token to the json file, and it should be ready for *countless* testing.
+
+> Ideally, I'd like just to pull from the original repository only to make it feel more *genuine with its purpose of fetching these images*, but it some ways it also helps both the maintainer of the images repo and this simple project.
 
 ## License
 Uses MIT license. See [LICENSE.md](LICENSE.md)
