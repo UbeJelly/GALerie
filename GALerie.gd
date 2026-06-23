@@ -4,12 +4,12 @@
 
 enum Get { TREE, LANG, IMG }
 
-var is_query_active := false		# Toggles when making requests or not
+var is_hovered_meta := false		# Toggles on hover [url]; for tooltips
+
 var query: int = 0					# Current query type (e.g. Get.TREE)
 var trees: Array = []				# List of langs trees (i.e. main dir)
 var i_url: Array = []				# List of langs' images (blob urls)
 var blobs: Array = []				# List of img blobs to use as texture
-var anime: PackedStringArray = []	# List of anime image cache paths
 
 var files_path: String = OS.get_system_dir(OS.SYSTEM_DIR_DOCUMENTS)+"/GALerie"
 var anime_path: String = files_path+"/Anime_Girls"			## The download directory
@@ -28,11 +28,13 @@ var headers := [
 @export_category("Terminal")
 @export var print_data := false			## Show or hide the requested data.
 
+@onready var gui: Panel = $GUI
 @onready var sections: TabContainer = $%Sections
 @onready var languages: VBoxContainer = $%Langs
 @onready var catalog: ScrollContainer = $%Catalog
 @onready var animes: HFlowContainer = $%Gals
 @onready var logs_text: RichTextLabel = $%LogsText
+@onready var tooltip: RichTextLabel = $%Tooltip
 
 @onready var tabs: Array = get_tree().get_nodes_in_group("Tabs")
 
@@ -93,7 +95,10 @@ func GALerieClient(url: String, endpoint: String, method: String) -> void:
 		var error: int = 0
 		error = request(url + endpoint, headers, HTTPClient.METHOD_GET)
 		if error == OK:
-			var endpoint_log := "\nRequest endpoint: %s" % url + endpoint
+			var newline := ""
+			if not method == "get_repo_tree":
+				newline = "\n"
+			var endpoint_log := "%sRequest endpoint: %s" % [newline, url + endpoint]
 			var success_run := "[color=%s][b]✓[/b] %s() run successfully.[/color]"
 			print(endpoint_log)
 			log_print(endpoint_log)
@@ -311,13 +316,28 @@ func _on_langs_btn_pressed(url: String) -> void:
 
 
 func _on_thumbnail_pressed(image: Image, image_save_path: String) -> void:
-	var format: String = image_save_path.get_extension()
+	var paths: Dictionary =	{
+		"file": image_save_path,
+		"name": image_save_path.get_file(),
+		"dir": image_save_path.get_base_dir(),
+		"format": image_save_path.get_extension()
+	}
+	var format: String = paths["format"]
+	var error: int = ERR_INVALID_DATA
+	var error_msg: String = "\n%s"+paths["name"]+"%s"+paths["dir"]+"%s"
+
 	match format:
-		"png": image.save_png(image_save_path)
-		"jpg": image.save_jpg(image_save_path, 1.0)
-		"webp": image.save_webp(image_save_path, false, 1.0)
-		"bmp": image.save_jpg(image_save_path, 1.0)
-	print(image_save_path.get_file()+" was saved successfully on "+image_save_path.get_base_dir())
+		"png": error = image.save_png(image_save_path)
+		"jpg": error = image.save_jpg(image_save_path, 1.0)
+		"webp": error = image.save_webp(image_save_path, false, 1.0)
+		"bmp": error = image.save_jpg(image_save_path, 1.0)
+
+	if error == OK:
+		print_rich(error_msg % ["[color=%s][b]✓ Successfully saved[/b][/color] [url underline=always tooltip='View image' href={file}]".format(paths), "[/url] on [url underline=always tooltip='Open folder' href={dir}]".format(paths), "[/url]\n"] % "green")
+		log_print(error_msg % ["[color=%s][b]✓ Successfully saved[/b][/color] [url underline=always tooltip='View image' href={file}]".format(paths), "[/url] on [url underline=always tooltip='Open folder' href={dir}]".format(paths), "[/url]\n"] % "2aa300")
+	else:
+		print_rich(error_msg % ["[color=%s][b]❌ Failed to save[/b][/color] ", " on ", "\n"] % "red")
+		log_print(error_msg % ["[color=%s][b]❌ Failed to save[/b][/color] ", " on ", "\n"] % "cc0000")
 
 
 ## TODO: Show a small popup that shows its anime's name and programming language.
@@ -390,3 +410,37 @@ func parse_JSON(body: PackedByteArray) -> Variant:
 		if print_data == true:
 			print("❌ parse_JSON() error: ", json.get_error_message(), " in ", string, " at line ", json.get_error_line(), ".")
 		return {}
+
+
+## Reusable signal callable for any RichTextLabel with url tags.
+## [param meta] is any object which will be executed by OS.shell_open()
+## [param source] is the node which has this meta.
+func _on_meta_hover_entered(_meta: Variant, source: RichTextLabel) -> void:
+	is_hovered_meta = true
+	if source.name == "LogsText":
+		var temp_tooltip_str: String = source.get_tooltip(source.get_local_mouse_position())
+		tooltip.text = temp_tooltip_str
+	tooltip.show()
+
+
+## The reverse of _on_meta_hover_entered() where it detects mouse exit.
+## [param meta] is any object which will be executed by OS.shell_open()
+## [param source] is the node which has this meta.
+func _on_meta_hover_exited(_meta: Variant, _source: RichTextLabel) -> void:
+	is_hovered_meta = false
+	tooltip.hide()
+	tooltip.text = ""
+	tooltip.position = Vector2(0, -32)
+
+
+func _process(_delta: float) -> void:
+	if is_hovered_meta == true:
+		var mouse_position = $GUI.get_global_mouse_position()
+		var tooltip_offset := Vector2(16, 12)
+		tooltip.position = mouse_position + tooltip_offset
+
+
+func _on_child_entered_tree(node: Node, source: Node) -> void:
+	if node is PopupPanel:
+		if source.name == "LogsText":
+			node.queue_free()

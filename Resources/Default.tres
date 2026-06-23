@@ -176,6 +176,22 @@ corner_radius_top_right = 2
 corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n8h5g"]
+content_margin_left = 6.0
+content_margin_top = 6.0
+content_margin_right = 6.0
+content_margin_bottom = 6.0
+bg_color = Color(0.941176, 0.941176, 0.941176, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.74978, 0.7497801, 0.74977976, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
 [sub_resource type="FontFile" id="19"]
 cache/0/variation_coordinates = {}
 cache/0/face_index = 0
@@ -255,6 +271,11 @@ cache/0/16/0/descent = 0.0
 cache/0/16/0/underline_position = 0.0
 cache/0/16/0/underline_thickness = 0.0
 cache/0/16/0/scale = 1.0
+cache/0/12/0/ascent = 0.0
+cache/0/12/0/descent = 0.0
+cache/0/12/0/underline_position = 0.0
+cache/0/12/0/underline_thickness = 0.0
+cache/0/12/0/scale = 1.0
 
 [sub_resource type="StyleBoxFlat" id="14"]
 content_margin_left = 10.0
@@ -346,15 +367,6 @@ border_color = Color(0.84705883, 0.84705883, 0.84705883, 1)
 corner_radius_top_left = 2
 corner_radius_top_right = 2
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hrlk6"]
-content_margin_left = 6.0
-content_margin_top = 6.0
-content_margin_right = 6.0
-content_margin_bottom = 6.0
-bg_color = Color(0.941176, 0.941176, 0.941176, 1)
-shadow_size = 4
-shadow_offset = Vector2(0, 2)
-
 [resource]
 Button/colors/font_color = Color(0, 0, 0, 1)
 Button/colors/font_focus_color = Color(0, 0, 0, 1)
@@ -390,6 +402,7 @@ MarginContainer/constants/margin_right = 10
 MarginContainer/constants/margin_top = 10
 Panel/styles/panel = SubResource("7")
 PanelContainer/styles/panel = SubResource("StyleBoxFlat_i6qph")
+PopupPanel/styles/panel = SubResource("StyleBoxFlat_n8h5g")
 RichTextLabel/colors/default_color = Color(0, 0, 0, 1)
 RichTextLabel/colors/font_color_selected = Color(1, 1, 1, 1)
 RichTextLabel/colors/font_color_shadow = Color(0, 0, 0, 0)
@@ -416,5 +429,5 @@ TabContainer/styles/tab_hovered = SubResource("StyleBoxFlat_7ghkt")
 TabContainer/styles/tab_selected = SubResource("StyleBoxFlat_awpbh")
 TabContainer/styles/tab_unselected = SubResource("StyleBoxFlat_6nmsk")
 TooltipLabel/font_sizes/font_size = 12
-TooltipPanel/styles/panel = SubResource("StyleBoxFlat_hrlk6")
+TooltipPanel/styles/panel = null
 VBoxContainer/constants/separation = 10

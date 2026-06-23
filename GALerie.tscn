@@ -13,6 +13,18 @@ metadata/_custom_type_script = "uid://wgc02f0axtjr"
 script = ExtResource("4_uw21i")
 metadata/_custom_type_script = "uid://dc5xi8tj2pyhh"
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uw21i"]
+content_margin_left = 10.0
+content_margin_top = 6.0
+content_margin_right = 10.0
+content_margin_bottom = 6.0
+bg_color = Color(0.9411765, 0.9411765, 0.9411765, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.7490196, 0.7490196, 0.7490196, 1)
+
 [node name="GALerie" type="HTTPRequest" unique_id=1501397109]
 script = ExtResource("1_l1wfd")
 
@@ -101,4 +113,27 @@ custom_effects = [SubResource("RichTextEffect_uw21i"), SubResource("RichTextEffe
 threaded = true
 selection_enabled = true
 
+[node name="Tooltip" type="RichTextLabel" parent="GUI" unique_id=971041386]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_top = -32.0
+offset_right = 20.0
+offset_bottom = -20.0
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 12
+theme_override_font_sizes/bold_font_size = 12
+theme_override_font_sizes/bold_italics_font_size = 12
+theme_override_font_sizes/italics_font_size = 12
+theme_override_font_sizes/mono_font_size = 12
+theme_override_styles/normal = SubResource("StyleBoxFlat_uw21i")
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+threaded = true
+
 [connection signal="request_completed" from="." to="." method="_on_request_completed"]
+[connection signal="child_entered_tree" from="GUI/Margin/Sections/Logs/LogsText" to="." method="_on_child_entered_tree" flags=18]
+[connection signal="meta_hover_ended" from="GUI/Margin/Sections/Logs/LogsText" to="." method="_on_meta_hover_exited" flags=18]
+[connection signal="meta_hover_started" from="GUI/Margin/Sections/Logs/LogsText" to="." method="_on_meta_hover_entered" flags=18]
