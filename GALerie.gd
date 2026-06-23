@@ -1,23 +1,20 @@
-@tool class_name WAPooruClient extends HTTPRequest
+@tool class_name GALerieClient extends HTTPRequest
 
 #region Variables
 
-enum Get {
-	TREE,
-	LANG,
-	IMG
-}
+enum Get { TREE, LANG, IMG }
 
-var query: int = 0
+var is_query_active := false		# Toggles when making requests or not
+var query: int = 0					# Current query type (e.g. Get.TREE)
 var trees: Array = []				# List of langs trees (i.e. main dir)
 var i_url: Array = []				# List of langs' images (blob urls)
 var blobs: Array = []				# List of img blobs to use as texture
-var waifu: PackedStringArray = []	# List of waifu image cache paths
+var anime: PackedStringArray = []	# List of anime image cache paths
 
-var files_path: String = OS.get_system_dir(OS.SYSTEM_DIR_DOCUMENTS)+"/WAPooru"
-var waifu_path: String = files_path+"/Waifus"								## The download directory
-var cache_path: String = OS.get_user_data_dir()+"/cache"					## Caches to %AppData%/Roaming/WAPooru
-var saves_path: String = cache_path+"/ImgList"								## Save file path
+var files_path: String = OS.get_system_dir(OS.SYSTEM_DIR_DOCUMENTS)+"/GALerie"
+var anime_path: String = files_path+"/Anime_Girls"			## The download directory
+var cache_path: String = OS.get_user_data_dir()+"/cache"	## Caches to %AppData%/Roaming/GALerie
+var saves_path: String = cache_path+"/ImgList"				## Save file path
 
 ## Path of auth.json which contains data of repo owner and API token
 var _AUTH_PATH: String = ProjectSettings.globalize_path("res://.env/%s")	
@@ -31,9 +28,13 @@ var headers := [
 @export_category("Terminal")
 @export var print_data := false			## Show or hide the requested data.
 
-@onready var languages: VBoxContainer = $%Languages
+@onready var sections: TabContainer = $%Sections
+@onready var languages: VBoxContainer = $%Langs
 @onready var catalog: ScrollContainer = $%Catalog
-@onready var waifus: HFlowContainer = $%Waifus
+@onready var animes: HFlowContainer = $%Gals
+@onready var logs_text: RichTextLabel = $%LogsText
+
+@onready var tabs: Array = get_tree().get_nodes_in_group("Tabs")
 
 #endregion
 
@@ -61,8 +62,9 @@ func _get_auth() -> String:
 func _ready() -> void:
 	_set_auth(_get_auth())
 	_init_directory(files_path)
-	_init_directory(waifu_path)
+	_init_directory(anime_path)
 	#_init_directory(cache_path)
+	set_tabs()
 
 	if not Engine.is_editor_hint():
 		get_repo_tree()
@@ -73,9 +75,12 @@ func _ready() -> void:
 		get_language(endpoint)
 		await request_completed
 
-		set_waifu_thumbnails(i_url)
+		set_anime_thumbnails(i_url)
 
 #endregion
+
+func log_print(text: String) -> void:
+	logs_text.text += text+"\n"
 
 #region API calls
 
@@ -83,39 +88,49 @@ func _ready() -> void:
 ## [param url] is the main url that hosts the API.
 ## [param endpoint] is the request endpoint, e.g. /trees/master.
 ## [param method] is the method which uses this function for specific requests.
-func WAPooruClient(url: String, endpoint: String, method: String) -> void:
+func GALerieClient(url: String, endpoint: String, method: String) -> void:
 	if not url == "" or not endpoint == "":
 		var error: int = 0
 		error = request(url + endpoint, headers, HTTPClient.METHOD_GET)
 		if error == OK:
-			print("\nRequest endpoint: %s" % url + endpoint)
-			print_rich("[color=green][b]✓[/b] %s() run successfully.[/color]" % method)
+			var endpoint_log := "\nRequest endpoint: %s" % url + endpoint
+			var success_run := "[color=%s][b]✓[/b] %s() run successfully.[/color]"
+			print(endpoint_log)
+			log_print(endpoint_log)
+			print_rich(success_run % ["green", method])
+			log_print(success_run % ["2aa300", method])
 		else:
-			print("❌ %s() failed." % method)
+			var failed_run := "[color=%s][b]❌[/b] %s() failed.[/color]"
+			print_rich(failed_run % ["red", method])
+			log_print(failed_run % ["cc0000", method])
 	else:
-		print("❌ WAPooru() failed. The url or endpoint cannot be empty.")
+		var missing_args := "[color=%s][b]❌[/b] GALerie() failed. The url or endpoint cannot be empty."
+		print_rich(missing_args % "red")
+		log_print(missing_args % "cc0000")
 
 
 ## Returns a Dictionary of trees, i.e. directories in a repo branch.
 ## [param endpoint] is the request endpoint.
 func get_repo_tree(endpoint: String = "/trees/master") -> void:
 	query = Get.TREE
-	WAPooruClient(git_url, endpoint, "get_repo_tree")
+	GALerieClient(git_url, endpoint, "get_repo_tree")
 
 
-## Returns a Dictionary of waifus w/ coding books.
+## Returns a Dictionary of animes w/ coding books.
 ## [param endpoint] is the request endpoint.
 func get_language(endpoint: String) -> void:
 	query = Get.LANG
-	WAPooruClient(git_url, endpoint, "get_language")
+	GALerieClient(git_url, endpoint, "get_language")
 
 
-## Returns a blob content of waifus w/ coding books.
+## Returns a blob content of animes w/ coding books.
 ## [param endpoint] is the request endpoint.
-func get_waifu_blob(endpoint: String, blob_name: String) -> void:
+func get_anime_blob(endpoint: String, blob_name: String) -> void:
 	query = Get.IMG
-	WAPooruClient(git_url, endpoint, "get_waifu_blob")
-	print_rich("Downloading %s blob[wave]...[/wave]" % blob_name)
+	GALerieClient(git_url, endpoint, "get_anime_blob")
+	var download_notice := "%sDownloading %s blob%s...%s"
+	print_rich(download_notice % ["", blob_name, "[wave]", "[/wave]"])
+	log_print(download_notice % [" [roll][b][i] )[/i][/b][/roll]  ", blob_name, " [bounce]", "[/bounce]"])
 
 #endregion
 
@@ -178,11 +193,11 @@ func load_image_from_buffer(buffer: PackedByteArray) -> ImageTexture:
 ## Loop thru i_url[] and make request each url.
 ## [param list] is the array which contains the blobs to request from.'
 ## list = i_url[{ "path": item["path"], "url": item["url"] }]
-func set_waifu_thumbnails(list: Array) -> void:
+func set_anime_thumbnails(list: Array) -> void:
 	if not list.is_empty():
 		for item in list:
 			var endpoint: String = item["url"].trim_prefix(git_url)
-			get_waifu_blob(endpoint, item["path"])
+			get_anime_blob(endpoint, item["path"])
 			await request_completed
 
 
@@ -204,10 +219,12 @@ func set_thumbnail_texture(index: int) -> void:
 				var texture_res_path: String = "user://%s.res" % image_name
 				ResourceSaver.save(texture, texture_res_path)
 
-				print_rich("Loading %s thumbnail[wave]...[/wave]" % image_name.get_file())
+				var thumbnail_load_notice := "%sLoading %s thumbnail%s...%s"
+				print_rich(thumbnail_load_notice % ["", image_name.get_file(), "[wave]", "[/wave]"])
+				log_print(thumbnail_load_notice % [" [roll][b][i] )[/i][/b][/roll]  ", image_name.get_file(), " [bounce]", "[/bounce]"])
 
 				# Bind _on_thumbnail_pressed & its args to TextureButton.pressed signal
-				thumbnail.pressed.connect(_on_thumbnail_pressed.bind(texture.get_image(), waifu_path+"/"+image_name))
+				thumbnail.pressed.connect(_on_thumbnail_pressed.bind(texture.get_image(), anime_path+"/"+image_name))
 				thumbnail.mouse_entered.connect(_on_thumbnail_hovered.bind(thumbnail))
 				thumbnail.mouse_exited.connect(_on_thumbnail_unhover.bind(thumbnail))
 
@@ -225,9 +242,11 @@ func set_thumbnail_texture(index: int) -> void:
 				thumbnail.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 
 				thumbnail.add_child(thumbnail_texture, true)
-				waifus.add_child(thumbnail, true)
+				animes.add_child(thumbnail, true)
 
-				print_rich("[color=green][b]✓[/b][/color] %s thumbnail loaded successfully." % image_name.get_file())
+				var thumbnail_success := "[color=%s][b]✓[/b][/color] %s thumbnail loaded successfully."
+				print_rich(thumbnail_success % ["green", image_name.get_file()])
+				log_print(thumbnail_success % ["2aa300", image_name.get_file()])
 	else:
 		print("Blob not found, nothing to make Image resource from.")
 		return
@@ -257,9 +276,9 @@ func get_langs(data: Dictionary) -> Array:
 	return list
 
 
-## Gets a waifu image blob content (base64 String).
+## Gets a anime image blob content (base64 String).
 ## [param data] is the object to get and check items from.
-func get_waifu(data: Dictionary) -> Dictionary:
+func get_anime(data: Dictionary) -> Dictionary:
 	return { "url": data.get("url"), "content": data.get("content") }
 
 #endregion
@@ -273,21 +292,22 @@ func _on_request_completed(_result: int, _response_code: int, _headers: PackedSt
 			Get.LANG:
 				i_url = get_langs(data)
 			Get.IMG:
-				blobs.append(get_waifu(data))
+				blobs.append(get_anime(data))
 				set_thumbnail_texture(blobs.size()-1)
 
 
 ## Signal when a language button is pressed. get_language() then sends a request to get available images from the language.
-## [param url] is the url of the languages to get waifu images from.
+## [param url] is the url of the languages to get anime images from.
 func _on_langs_btn_pressed(url: String) -> void:
+	cancel_request()
 	i_url = []
 	blobs = []
-	for thumbnail in waifus.get_children():
+	for thumbnail in animes.get_children():
 		thumbnail.queue_free()
 	var endpoint := url.trim_prefix(git_url)
 	get_language(endpoint)
 	await request_completed
-	set_waifu_thumbnails(i_url)
+	set_anime_thumbnails(i_url)
 
 
 func _on_thumbnail_pressed(image: Image, image_save_path: String) -> void:
@@ -300,18 +320,25 @@ func _on_thumbnail_pressed(image: Image, image_save_path: String) -> void:
 	print(image_save_path.get_file()+" was saved successfully on "+image_save_path.get_base_dir())
 
 
-## TODO: Show a small popup that shows its waifu's name and programming language.
+## TODO: Show a small popup that shows its anime's name and programming language.
 func _on_thumbnail_hovered(button: TextureButton) -> void:
 	var tween: Tween = create_tween()
 	tween.tween_property(button.get_child(0), "self_modulate", Color(1.125, 1.125, 1.125, 1.0), 0.15).set_ease(Tween.EASE_IN_OUT)
-	tween.tween_property(button.get_child(0), "scale", Vector2(1.125, 1.125), 0.15).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(button.get_child(0), "scale", Vector2(1.125, 1.125), 0.25).set_ease(Tween.EASE_IN)
 
 
 ## TODO: Hide the small popup.
 func _on_thumbnail_unhover(button: TextureButton) -> void:
 	var tween: Tween = create_tween()
 	tween.tween_property(button.get_child(0), "self_modulate", Color(1.0, 1.0, 1.0, 1.0), 0.15).set_ease(Tween.EASE_OUT_IN)
-	tween.tween_property(button.get_child(0), "scale", Vector2(1.0, 1.0), 0.15).set_ease(Tween.EASE_OUT_IN)
+	tween.tween_property(button.get_child(0), "scale", Vector2(1.0, 1.0), 0.25).set_ease(Tween.EASE_OUT)
+
+
+## Sets TabContainer's tab buttons' cursor
+func set_tabs() -> void:
+	for tab in tabs:
+		var tabbar: TabBar = tab.get_tab_bar()
+		tabbar.mouse_default_cursor_shape = Control.CursorShape.CURSOR_POINTING_HAND
 
 
 ## Initializes the directory for images.

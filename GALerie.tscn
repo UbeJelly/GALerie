@@ -1,0 +1,104 @@
+[gd_scene format=3 uid="uid://2bmeoh87qyc4"]
+
+[ext_resource type="Script" uid="uid://cnwntvp1we6nb" path="res://GALerie.gd" id="1_l1wfd"]
+[ext_resource type="Theme" uid="uid://bkc76s4gpp0nu" path="res://Resources/Default.tres" id="2_vvdw2"]
+[ext_resource type="Script" uid="uid://wgc02f0axtjr" path="res://Resources/Roll.gd" id="3_vvdw2"]
+[ext_resource type="Script" uid="uid://dc5xi8tj2pyhh" path="res://Resources/Bounce.gd" id="4_uw21i"]
+
+[sub_resource type="RichTextEffect" id="RichTextEffect_uw21i"]
+script = ExtResource("3_vvdw2")
+metadata/_custom_type_script = "uid://wgc02f0axtjr"
+
+[sub_resource type="RichTextEffect" id="RichTextEffect_auvss"]
+script = ExtResource("4_uw21i")
+metadata/_custom_type_script = "uid://dc5xi8tj2pyhh"
+
+[node name="GALerie" type="HTTPRequest" unique_id=1501397109]
+script = ExtResource("1_l1wfd")
+
+[node name="GUI" type="Panel" parent="." unique_id=329452866]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_vvdw2")
+
+[node name="Margin" type="MarginContainer" parent="GUI" unique_id=1730895591]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Sections" type="TabContainer" parent="GUI/Margin" unique_id=2095957610 groups=["Tabs"]]
+unique_name_in_owner = true
+layout_mode = 2
+current_tab = 0
+
+[node name="Browse" type="HSplitContainer" parent="GUI/Margin/Sections" unique_id=1727472176]
+layout_mode = 2
+size_flags_vertical = 3
+split_offsets = PackedInt32Array(240)
+split_offset = 240
+metadata/_tab_index = 0
+
+[node name="Langs" type="ScrollContainer" parent="GUI/Margin/Sections/Browse" unique_id=1292901501]
+layout_mode = 2
+follow_focus = true
+draw_focus_border = true
+
+[node name="Margin" type="MarginContainer" parent="GUI/Margin/Sections/Browse/Langs" unique_id=519294174]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 0
+
+[node name="Langs" type="VBoxContainer" parent="GUI/Margin/Sections/Browse/Langs/Margin" unique_id=72143297]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Catalog" type="ScrollContainer" parent="GUI/Margin/Sections/Browse" unique_id=2035236468]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+follow_focus = true
+draw_focus_border = true
+
+[node name="Margin" type="MarginContainer" parent="GUI/Margin/Sections/Browse/Catalog" unique_id=539742964]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="Gals" type="HFlowContainer" parent="GUI/Margin/Sections/Browse/Catalog/Margin" unique_id=1735141251]
+unique_name_in_owner = true
+layout_mode = 2
+alignment = 1
+
+[node name="Logs" type="MarginContainer" parent="GUI/Margin/Sections" unique_id=1046811525]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="LogsText" type="RichTextLabel" parent="GUI/Margin/Sections/Logs" unique_id=287011260]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 2
+bbcode_enabled = true
+scroll_following = true
+context_menu_enabled = true
+custom_effects = [SubResource("RichTextEffect_uw21i"), SubResource("RichTextEffect_auvss")]
+threaded = true
+selection_enabled = true
+
+[connection signal="request_completed" from="." to="." method="_on_request_completed"]

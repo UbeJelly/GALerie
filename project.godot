@@ -10,12 +10,12 @@ config_version=5
 
 [application]
 
-config/name="WAPooru"
-config/description="AKA 'Waifus and Programming Booru', is a lite imageboard of anime girls with programming books."
+config/name="GALerie"
+config/description="GALerie is a lite booru of anime girls with programming books."
 config/tags=PackedStringArray("priority", "wip")
 run/main_scene="uid://2bmeoh87qyc4"
 config/use_custom_user_dir=true
-config/custom_user_dir_name="WAPooru"
+config/custom_user_dir_name="GALerie"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
@@ -33,7 +33,7 @@ naming/script_name_casing=1
 
 [global_group]
 
-"Langs Buttons"="Buttons for languages, tools, and designs"
+Tabs="TabContainers"
 
 [physics]
 
