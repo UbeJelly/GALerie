@@ -8,22 +8,28 @@ Fetches images of anime girls with programming books from https://github.com/cat
 
 You can click on a thumbnail to save the image at `~/Documents/GALerie/Anime_Girls`, and click on any languages to load its images.
 
+### Logs
+
 There's a `Logs` section where it keeps track of some things in the background. It also `print_rich()` on Godot's terminal but only with supported built-in effects, i.e. no custom effects.
 
 ![logs_screenshot.png](.github/img/logs_screenshot.png)
+
+### Settings
+
+![settings_screenshot.png](.github/img/settings_screenshot.png)
 
 ## Features
 
 - [x] Browse - shows the programming books and anime girls to choose and download from.
 - [x] Logs - shows the background information like request status, loading, and saving images.
-- [x] Settings - shows the parameters that can be changed to affect some program functions.
-- [x] Cache - the existing texture resources in memory are skipped from http requests.
+- [x] Settings - shows the parameters that can be changed to affect some program functions and data.
+- [x] Cache - the saved texture resources in memory are skipped from requests, so thumbnails load instantly.
 - [x] Animations - hover effects on thumbnails, tooltips pop in/out, custom effects on `Logs`.
 - [x] Rate limit - mainly for testing purposes, but can also be applied on export. (see [Testing](#testing))
 
 ## Process
 
-It basically requests the blob files through the entire repo, so we get `PackedByteArray` buffers which are then converted into readable `ImageTextures`.
+It basically requests the blob files through the entire repo, so we get `PackedByteArray` buffers which are then converted into readable `ImageTextures` (these are the image caches).
 
 This means that it doesn't really download the images to any folder by default, and it will only save the images locally after you click on the thumbnails.
 

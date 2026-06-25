@@ -29,6 +29,7 @@ border_width_bottom = 2
 border_color = Color(0.7490196, 0.7490196, 0.7490196, 1)
 
 [node name="GALerie" type="HTTPRequest" unique_id=1501397109]
+use_threads = true
 script = ExtResource("1_l1wfd")
 
 [node name="GUI" type="Panel" parent="." unique_id=329452866]
@@ -52,20 +53,26 @@ unique_name_in_owner = true
 layout_mode = 2
 current_tab = 0
 
-[node name="🔍 Browse" type="HSplitContainer" parent="GUI/Margin/Sections" unique_id=1727472176]
+[node name="🔍 Browse" type="MarginContainer" parent="GUI/Margin/Sections" unique_id=356299535]
+layout_mode = 2
+metadata/_tab_index = 0
+metadata/tooltip_text = "Browse anime girls with programming books"
+
+[node name="Panel" type="PanelContainer" parent="GUI/Margin/Sections/🔍 Browse" unique_id=133272211]
+layout_mode = 2
+
+[node name="Sections" type="HSplitContainer" parent="GUI/Margin/Sections/🔍 Browse/Panel" unique_id=1727472176]
 layout_mode = 2
 size_flags_vertical = 3
 split_offsets = PackedInt32Array(240)
 split_offset = 240
-metadata/_tab_index = 0
-metadata/tooltip_text = "Browse anime girls with programming books"
 
-[node name="Langs" type="ScrollContainer" parent="GUI/Margin/Sections/🔍 Browse" unique_id=1292901501 groups=["Scrollbars"]]
+[node name="Langs" type="ScrollContainer" parent="GUI/Margin/Sections/🔍 Browse/Panel/Sections" unique_id=1292901501 groups=["Scrollbars"]]
 layout_mode = 2
 follow_focus = true
 draw_focus_border = true
 
-[node name="Margin" type="MarginContainer" parent="GUI/Margin/Sections/🔍 Browse/Langs" unique_id=519294174]
+[node name="Margin" type="MarginContainer" parent="GUI/Margin/Sections/🔍 Browse/Panel/Sections/Langs" unique_id=519294174]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -74,20 +81,20 @@ theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 0
 
-[node name="Langs" type="VBoxContainer" parent="GUI/Margin/Sections/🔍 Browse/Langs/Margin" unique_id=72143297]
+[node name="Langs" type="VBoxContainer" parent="GUI/Margin/Sections/🔍 Browse/Panel/Sections/Langs/Margin" unique_id=72143297]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Catalog" type="ScrollContainer" parent="GUI/Margin/Sections/🔍 Browse" unique_id=2035236468 groups=["Scrollbars"]]
+[node name="Catalog" type="ScrollContainer" parent="GUI/Margin/Sections/🔍 Browse/Panel/Sections" unique_id=2035236468 groups=["Scrollbars"]]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 follow_focus = true
 draw_focus_border = true
 
-[node name="Margin" type="MarginContainer" parent="GUI/Margin/Sections/🔍 Browse/Catalog" unique_id=539742964]
+[node name="Margin" type="MarginContainer" parent="GUI/Margin/Sections/🔍 Browse/Panel/Sections/Catalog" unique_id=539742964]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -96,7 +103,7 @@ theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 
-[node name="Gals" type="HFlowContainer" parent="GUI/Margin/Sections/🔍 Browse/Catalog/Margin" unique_id=1735141251]
+[node name="Gals" type="HFlowContainer" parent="GUI/Margin/Sections/🔍 Browse/Panel/Sections/Catalog/Margin" unique_id=1735141251]
 unique_name_in_owner = true
 layout_mode = 2
 alignment = 1
@@ -127,34 +134,148 @@ metadata/tooltip_text = "Change parameters for functionality"
 [node name="Buttons" type="VBoxContainer" parent="GUI/Margin/Sections/⚙️ Settings" unique_id=1253772969]
 layout_mode = 2
 
-[node name="PushLogOutput" type="HBoxContainer" parent="GUI/Margin/Sections/⚙️ Settings/Buttons" unique_id=979316002]
+[node name="LoggingSettings" type="PanelContainer" parent="GUI/Margin/Sections/⚙️ Settings/Buttons" unique_id=655673560]
 layout_mode = 2
 
-[node name="PushLogOutputToggle" type="CheckButton" parent="GUI/Margin/Sections/⚙️ Settings/Buttons/PushLogOutput" unique_id=1623074573]
+[node name="VBox" type="VBoxContainer" parent="GUI/Margin/Sections/⚙️ Settings/Buttons/LoggingSettings" unique_id=1663301812]
+layout_mode = 2
+
+[node name="Title" type="HBoxContainer" parent="GUI/Margin/Sections/⚙️ Settings/Buttons/LoggingSettings/VBox" unique_id=1605404638]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="Main" type="RichTextLabel" parent="GUI/Margin/Sections/⚙️ Settings/Buttons/LoggingSettings/VBox/Title" unique_id=65660577]
+clip_contents = false
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_auvss")
+bbcode_enabled = true
+text = "[font embolden=0.75 size=26][color=royal_blue]Log process[/color][/font]"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 2
+vertical_alignment = 2
+
+[node name="Sub" type="RichTextLabel" parent="GUI/Margin/Sections/⚙️ Settings/Buttons/LoggingSettings/VBox/Title" unique_id=1867579483]
+clip_contents = false
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxFlat_auvss")
+bbcode_enabled = true
+text = "[font size=20][color=web_gray]Settings that keep logs of certain background events and user inputs.[/color][/font]"
+fit_content = true
+scroll_active = false
+vertical_alignment = 1
+
+[node name="PushLogOutput" type="HBoxContainer" parent="GUI/Margin/Sections/⚙️ Settings/Buttons/LoggingSettings/VBox" unique_id=979316002]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="PushLogOutputToggle" type="CheckButton" parent="GUI/Margin/Sections/⚙️ Settings/Buttons/LoggingSettings/VBox/PushLogOutput" unique_id=1623074573]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 button_pressed = true
-text = "Push Log Output"
+text = "Push log output"
+alignment = 1
 
-[node name="Info" type="RichTextLabel" parent="GUI/Margin/Sections/⚙️ Settings/Buttons/PushLogOutput" unique_id=1901583867]
+[node name="Info" type="RichTextLabel" parent="GUI/Margin/Sections/⚙️ Settings/Buttons/LoggingSettings/VBox/PushLogOutput" unique_id=1901583867]
+clip_contents = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/normal = SubResource("StyleBoxFlat_auvss")
 bbcode_enabled = true
 text = "Prints log outputs on [font embolden=0.75][color=purple]Logs[/color][/font] section. Useful for keeping track of information in the background."
+fit_content = true
+scroll_active = false
+
+[node name="DeleteSettings" type="PanelContainer" parent="GUI/Margin/Sections/⚙️ Settings/Buttons" unique_id=1037661243]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="GUI/Margin/Sections/⚙️ Settings/Buttons/DeleteSettings" unique_id=1619209235]
+layout_mode = 2
+
+[node name="Title" type="HBoxContainer" parent="GUI/Margin/Sections/⚙️ Settings/Buttons/DeleteSettings/VBox" unique_id=135590155]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="Main" type="RichTextLabel" parent="GUI/Margin/Sections/⚙️ Settings/Buttons/DeleteSettings/VBox/Title" unique_id=2049232183]
+clip_contents = false
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_auvss")
+bbcode_enabled = true
+text = "[font embolden=0.75 size=26][color=crimson]Delete data[/color][/font]"
+fit_content = true
+scroll_active = false
 autowrap_mode = 0
+horizontal_alignment = 2
+vertical_alignment = 2
+
+[node name="Sub" type="RichTextLabel" parent="GUI/Margin/Sections/⚙️ Settings/Buttons/DeleteSettings/VBox/Title" unique_id=67668501]
+clip_contents = false
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxFlat_auvss")
+bbcode_enabled = true
+text = "[font size=20][color=web_gray]Settings that delete certain types of locally saved data, e.g. images.[/color][/font]"
+fit_content = true
+scroll_active = false
+vertical_alignment = 1
+
+[node name="TrashImageCache" type="HBoxContainer" parent="GUI/Margin/Sections/⚙️ Settings/Buttons/DeleteSettings/VBox" unique_id=1599583753]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="TrashImageCacheButton" type="Button" parent="GUI/Margin/Sections/⚙️ Settings/Buttons/DeleteSettings/VBox/TrashImageCache" unique_id=1623263207]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "Trash image cache"
+
+[node name="Info" type="RichTextLabel" parent="GUI/Margin/Sections/⚙️ Settings/Buttons/DeleteSettings/VBox/TrashImageCache" unique_id=2096737525]
+clip_contents = false
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxFlat_auvss")
+bbcode_enabled = true
+text = "Moves image caches to trash. Caches save time by getting what's already available. Useful for managing cache."
+fit_content = true
+scroll_active = false
+
+[node name="DeleteImageCache" type="HBoxContainer" parent="GUI/Margin/Sections/⚙️ Settings/Buttons/DeleteSettings/VBox" unique_id=1435347660]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="DeleteImageCacheButton" type="Button" parent="GUI/Margin/Sections/⚙️ Settings/Buttons/DeleteSettings/VBox/DeleteImageCache" unique_id=671863193]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "Delete image cache"
+
+[node name="Info" type="RichTextLabel" parent="GUI/Margin/Sections/⚙️ Settings/Buttons/DeleteSettings/VBox/DeleteImageCache" unique_id=1210653696]
+clip_contents = false
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxFlat_auvss")
+bbcode_enabled = true
+text = "[color=red]Permanently deletes[/color] the image cache. Useful to free memory."
+fit_content = true
+scroll_active = false
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GUI/Margin/Sections/⚙️ Settings/Buttons" unique_id=467479366]
+layout_mode = 2
 
 [node name="Tooltip" type="RichTextLabel" parent="GUI" unique_id=971041386]
 unique_name_in_owner = true
 visible = false
 layout_mode = 0
-offset_left = 344.0
-offset_top = 140.0
-offset_right = 400.0
-offset_bottom = 169.0
-scale = Vector2(1e-05, 1e-05)
+offset_right = 257.0
+offset_bottom = 29.0
 mouse_filter = 2
 theme_override_font_sizes/normal_font_size = 12
 theme_override_font_sizes/bold_font_size = 12
@@ -174,4 +295,6 @@ threaded = true
 [connection signal="meta_clicked" from="GUI/Margin/Sections/📃 Logs/LogsText" to="." method="_on_meta_clicked"]
 [connection signal="meta_hover_ended" from="GUI/Margin/Sections/📃 Logs/LogsText" to="." method="_on_meta_hover_exited" flags=18]
 [connection signal="meta_hover_started" from="GUI/Margin/Sections/📃 Logs/LogsText" to="." method="_on_meta_hover_entered" flags=18]
-[connection signal="toggled" from="GUI/Margin/Sections/⚙️ Settings/Buttons/PushLogOutput/PushLogOutputToggle" to="." method="_on_setting_toggled" flags=18]
+[connection signal="toggled" from="GUI/Margin/Sections/⚙️ Settings/Buttons/LoggingSettings/VBox/PushLogOutput/PushLogOutputToggle" to="." method="_on_setting_toggled" flags=18]
+[connection signal="pressed" from="GUI/Margin/Sections/⚙️ Settings/Buttons/DeleteSettings/VBox/TrashImageCache/TrashImageCacheButton" to="." method="_on_button_pressed" flags=18]
+[connection signal="pressed" from="GUI/Margin/Sections/⚙️ Settings/Buttons/DeleteSettings/VBox/DeleteImageCache/DeleteImageCacheButton" to="." method="_on_button_pressed" flags=18]

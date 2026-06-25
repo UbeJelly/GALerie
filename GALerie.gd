@@ -165,20 +165,20 @@ func GALerieClient(url: String, endpoint: String, method: String) -> void:
 				var endpoint_log := "%sRequest endpoint: %s" % [newline, url + endpoint]
 				var success_run := "[color=%s][b]✓[/b] %s() run successfully.[/color]"
 
-				print(endpoint_log)
-				push_logs(endpoint_log)
-				print_rich(success_run % ["green", method])
-				push_logs(success_run % ["2aa300", method])
+				format_output_prints(endpoint_log, [""], [""])
+				format_output_prints(success_run, ["green", method], ["2aa300", method])
 		else:
 			if push_log_output == true:
-				var failed_run := "[color=%s][b]❌[/b] %s() failed.[/color]"
-				print_rich(failed_run % ["red", method])
-				push_logs(failed_run % ["cc0000", method])
+				format_output_prints(
+					"[color=%s][b]❌[/b] %s() failed.[/color]",
+					["red", method], ["cc0000", method]
+				)
 	else:
 		if push_log_output == true:
-			var missing_args := "[color=%s][b]❌[/b] GALerie() failed. The url or endpoint cannot be empty."
-			print_rich(missing_args % "red")
-			push_logs(missing_args % "cc0000")
+			format_output_prints(
+				"[color=%s][b]❌[/b] GALerie() failed. The url or endpoint cannot be empty.",
+				["red"], ["cc0000"]
+			)
 
 
 ## Returns a Dictionary of trees, i.e. directories in a repo branch.
@@ -202,9 +202,11 @@ func get_anime_blob(endpoint: String, blob_name: String) -> void:
 	GALerieClient(git_url, endpoint, "get_anime_blob")
 
 	if push_log_output == true:
-		var download_notice := "%sDownloading %s blob%s...%s"
-		print_rich(download_notice % ["", blob_name, "[wave]", "[/wave]"])
-		push_logs(download_notice % [" [roll][b][i] )[/i][/b][/roll]  ", blob_name, " [bounce]", "[/bounce]"])
+		format_output_prints(
+			"%sDownloading %s blob%s...%s",
+			["", blob_name, "[wave]", "[/wave]"],
+			[" [roll][b][i] )[/i][/b][/roll]  ", blob_name, " [bounce]", "[/bounce]"]
+		)
 
 #endregion
 
@@ -311,9 +313,11 @@ func set_thumbnail_texture(index: int) -> void:
 			thumbnail_texture.texture = texture
 
 		if push_log_output == true:
-			var thumbnail_load_notice := "%sLoading %s thumbnail%s...%s"
-			print_rich(thumbnail_load_notice % ["", image_name.get_file(), "[wave]", "[/wave]"])
-			push_logs(thumbnail_load_notice % [" [roll][b][i] )[/i][/b][/roll]  ", image_name.get_file(), " [bounce]", "[/bounce]"])
+			format_output_prints(
+				"%sLoading %s thumbnail%s...%s",
+				["", image_name.get_file(), "[wave]", "[/wave]"],
+				[" [roll][b][i] )[/i][/b][/roll]  ", image_name.get_file(), " [bounce]", "[/bounce]"]
+			)
 
 		# Bind _on_thumbnail_pressed & its args to TextureButton.pressed signal
 		thumbnail.pressed.connect(_on_thumbnail_pressed.bind(texture.get_image(), anime_path+"/"+image_name))
@@ -331,9 +335,11 @@ func set_thumbnail_texture(index: int) -> void:
 		animes.add_child(thumbnail, true)
 
 		if push_log_output == true:
-			var thumbnail_success := "[color=%s][b]✓[/b][/color] %s thumbnail loaded successfully."
-			print_rich(thumbnail_success % ["green", image_name.get_file()])
-			push_logs(thumbnail_success % ["2aa300", image_name.get_file()])
+			format_output_prints(
+				"[color=%s][b]✓[/b][/color] %s thumbnail loaded successfully.",
+				["green", image_name.get_file()],
+				["2aa300", image_name.get_file()]
+			)
 
 		thumbnail_texture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		thumbnail_texture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
@@ -413,7 +419,7 @@ func _on_thumbnail_pressed(image: Image, image_save_path: String) -> void:
 	}
 	var format: String = paths["format"]
 	var error: int = ERR_INVALID_DATA
-	var error_msg: String = "\n%s"+paths["name"]+"%s"+paths["dir"]+"%s"
+	var error_msg: String= "\n%s"+paths["name"]+"%s"+paths["dir"]+"%s"
 
 	match format:
 		"png": error = image.save_png(image_save_path)
@@ -423,12 +429,19 @@ func _on_thumbnail_pressed(image: Image, image_save_path: String) -> void:
 
 	if error == OK:
 		if push_log_output == true:
-			print_rich(error_msg % ["[color=%s][b]✓ Successfully saved[/b][/color] [url underline=always tooltip='View image' href={file}]".format(paths), "[/url] on [url underline=always tooltip='Open folder' href={dir}]".format(paths), "[/url]\n"] % "green")
-			push_logs(error_msg % ["[color=%s][b]✓ Successfully saved[/b][/color] [url underline=always tooltip='View image' href={file}]".format(paths), "[/url] on [url underline=always tooltip='Open folder' href={dir}]".format(paths), "[/url]\n"] % "2aa300")
+			format_output_prints(
+				error_msg,
+				["[color=green][b]✓ Successfully saved[/b][/color] [url underline=always tooltip='View image' href={file}]".format(paths), "[/url] on [url underline=always tooltip='Open folder' href={dir}]".format(paths), "[/url]\n"],
+				["[color=2aa300][b]✓ Successfully saved[/b][/color] [url underline=always tooltip='View image' href={file}]".format(paths), "[/url] on [url underline=always tooltip='Open folder' href={dir}]".format(paths), "[/url]\n"]
+			)
+
 	else:
 		if push_log_output == true:
-			print_rich(error_msg % ["[color=%s][b]❌ Failed to save[/b][/color] ", " on ", "\n"] % "red")
-			push_logs(error_msg % ["[color=%s][b]❌ Failed to save[/b][/color] ", " on ", "\n"] % "cc0000")
+			format_output_prints(
+				error_msg,
+				["[color=red][b]❌ Failed to save[/b][/color] ", " on ", "\n"],
+				["[color=cc0000][b]❌ Failed to save[/b][/color] ", " on ", "\n"]
+			)
 
 
 ## TODO: Show a small popup that shows its anime's name and programming language.
@@ -563,3 +576,44 @@ func _on_child_entered_tree(node: Node, source: Node) -> void:
 			node.queue_free()
 
 #endregion
+
+
+func _on_button_pressed(source: BaseButton) -> void:
+	match source.name:
+		"TrashImageCacheButton":
+			move_to_trash_cached_files(cache_path)
+		"DeleteImageCacheButton":
+			delete_cached_files(cache_path)
+
+
+## Moves to trash the saved texture resources from cache_path.
+## [param path] is the directory of the cached files.
+func move_to_trash_cached_files(path: String) -> void:
+	var dir = DirAccess.open(path)
+	if dir:
+		for file in dir.get_files():
+			if file.get_extension().to_lower() == "res":
+				OS.move_to_trash(ProjectSettings.globalize_path(file))
+
+
+## Deletes permanently the saved texture resources from cache_path.
+## [param path] is the directory of the cached files.
+func delete_cached_files(path: String) -> void:
+	var dir = DirAccess.open(path)
+	if dir:
+		for file in dir.get_files():
+			if file.get_extension().to_lower() == "res":
+				dir.remove(file)
+
+
+## Formats the string outputs for the Godot console and Logs' RichTextLabel.
+## The 2 array of args are used for separate functions: print_rich() and push_logs().
+## [param godot_console_args] is an array which string in the Godot console would format from i.e. %s will substituted with any values.
+## [param logst_text_args] is an array which string in the Logs would format from i.e. %s will be substituted with any values.
+func format_output_prints(string: String, godot_console_args: Array, logs_text_args: Array) -> void:
+	if not "%s" in string:
+		print_rich(string)
+		push_logs(string)
+	else:
+		print_rich(string % godot_console_args)
+		push_logs(string % logs_text_args)
