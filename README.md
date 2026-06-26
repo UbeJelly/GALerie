@@ -8,7 +8,7 @@ Fetches images of anime girls with programming books from https://github.com/cat
 
 You can click on a thumbnail to save the image at `~/Documents/GALerie/Anime_Girls`, and click on any languages to load its images.
 
-![preview.mp4](.github/vid/preview.mp4)
+[preview.webm](https://github.com/user-attachments/assets/988913dd-b1b7-4811-bdd9-3ed21c9d069c)
 
 ### Logs
 
