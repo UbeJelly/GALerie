@@ -25,7 +25,12 @@ There's a `Logs` section where it keeps track of some things in the background. 
 - [x] Settings - shows the parameters that can be changed to affect some program functions and data.
 - [x] Cache - the saved texture resources in memory are skipped from requests, so thumbnails load instantly.
 - [x] Animations - hover effects on thumbnails, tooltips pop in/out, custom effects on `Logs`.
+- [x] Accessibility - settings that allow most people to use the program with ease.
 - [x] Rate limit - mainly for testing purposes, but can also be applied on export. (see [Testing](#testing))
+
+### Accessibility
+
+- Reduced motions - better known as *prefers-reduced-motion*, follows system's settings if animations are enabled or not. It overrides the `Enable animations` setting.
 
 ## Process
 

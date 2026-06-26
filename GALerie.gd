@@ -5,8 +5,14 @@
 enum Get { TREE, LANG, IMG }
 
 var is_hovered_meta := false	## Toggles on hover [url]; for tooltips
-var push_log_output := true
-var settings_values := { "push_log_output": push_log_output }
+var push_log_output := true		## Toggles log output setting
+var allow_animation := true		## Toggles animations setting
+var sync_no_motions := false	## Follows system's prefers-reduced-motion
+var settings_values := {
+	"push_log_output": push_log_output,
+	"allow_animation": allow_animation,
+	"sync_no_motions": sync_no_motions,
+}
 
 var query: int = 0			## Current query type (e.g. Get.TREE)
 var trees: Array = []		## List of langs trees (i.e. main dir)
@@ -37,10 +43,16 @@ var headers := [
 @onready var animes: HFlowContainer = $%Gals
 @onready var logs_text: RichTextLabel = $%LogsText
 @onready var tooltip: RichTextLabel = $%Tooltip
+
 @onready var push_log_output_toggle: CheckButton = $%PushLogOutputToggle
+@onready var allow_animation_toggle: CheckButton = $%EnableAnimationsButton
+@onready var sync_no_motions_toggle: CheckButton = $%FollowReducedMotionsButton
 
 @onready var tabs: Array = get_tree().get_nodes_in_group("Tabs")
 @onready var bars: Array = get_tree().get_nodes_in_group("Scrollbars")
+
+@onready var bounce_fx: RichTextEffect = Bounce.new()
+@onready var roll_fx: RichTextEffect = Roll.new()
 
 #endregion
 
@@ -62,9 +74,13 @@ func load_settings(save_file: String) -> Dictionary:
 	var data := {}
 	if FileAccess.file_exists(save_file):
 		var file = FileAccess.open(save_file, FileAccess.READ)
-		var json_text = file.get_as_text()
-		data = JSON.parse_string(json_text)
-		file.close()
+		if file:
+			var json_text = file.get_as_text()
+			if not JSON.parse_string(json_text) == settings_values:
+				save_settings(settings_values)
+			else:
+				data = JSON.parse_string(json_text)
+			file.close()
 	return data
 
 
@@ -79,6 +95,57 @@ func _on_setting_toggled(toggled_on: bool, source: BaseButton) -> void:
 			push_log_output = toggled_on
 			settings_values["push_log_output"] = push_log_output
 			save_settings(settings_values)
+
+		"EnableAnimationsButton":
+			allow_animation = toggled_on
+			settings_values["allow_animation"] = allow_animation
+			bounce_fx._set("animated", allow_animation)
+			roll_fx._set("animated", allow_animation)
+			save_settings(settings_values)
+
+
+func _init_settings() -> void:
+	load_cached_files(cache_path)
+
+	logs_text.install_effect(bounce_fx)
+	logs_text.install_effect(roll_fx)
+
+	if DisplayServer.accessibility_should_reduce_animation() == 1:
+		sync_no_motions = true
+	else:
+		sync_no_motions = false
+
+	settings_values["sync_no_motions"] = sync_no_motions
+	sync_no_motions_toggle.button_pressed = sync_no_motions
+	save_settings(settings_values)
+
+	settings_values = load_settings(config_sav)
+
+	if settings_values["allow_animation"] == true:
+		if settings_values["sync_no_motions"] == true:
+			allow_animation = false
+			allow_animation_toggle.button_mask = 0
+			allow_animation_toggle.shortcut_feedback = false
+			allow_animation_toggle.shortcut_in_tooltip = false
+			allow_animation_toggle.focus_mode = Control.FOCUS_NONE
+			allow_animation_toggle.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			allow_animation_toggle.mouse_default_cursor_shape = Control.CURSOR_ARROW
+		else:
+			allow_animation = settings_values["allow_animation"]
+			allow_animation_toggle.button_mask = 1
+			allow_animation_toggle.shortcut_feedback = true
+			allow_animation_toggle.shortcut_in_tooltip = true
+			allow_animation_toggle.focus_mode = Control.FOCUS_ALL
+			allow_animation_toggle.mouse_filter = Control.MOUSE_FILTER_STOP
+			allow_animation_toggle.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+
+	push_log_output = settings_values["push_log_output"]
+	push_log_output_toggle.button_pressed = push_log_output
+	allow_animation_toggle.button_pressed = allow_animation
+	bounce_fx._set("animated", allow_animation)
+	roll_fx._set("animated", allow_animation)
+
+	save_settings(settings_values) # just a fail-safe
 
 #endregion
 
@@ -124,11 +191,8 @@ func _ready() -> void:
 	_set_auth(_get_auth())
 	_init_directory(files_path)
 	_init_directory(anime_path)
-	load_cached_files(cache_path)
 
-	settings_values = load_settings(config_sav)
-	push_log_output = settings_values["push_log_output"]
-	push_log_output_toggle.button_pressed = push_log_output
+	_init_settings()
 
 	set_tabs()
 	set_bars()
@@ -203,9 +267,9 @@ func get_anime_blob(endpoint: String, blob_name: String) -> void:
 
 	if push_log_output == true:
 		format_output_prints(
-			"%sDownloading %s blob%s...%s",
-			["", blob_name, "[wave]", "[/wave]"],
-			[" [roll][b][i] )[/i][/b][/roll]  ", blob_name, " [bounce]", "[/bounce]"]
+			"%sDownloading %s blob%s",
+			["", blob_name, "[wave]...[/wave]"],
+			[" [roll][b][i] )[/i][/b][/roll]  ", blob_name, " [bounce]...[/bounce]"]
 		)
 
 #endregion
@@ -446,16 +510,20 @@ func _on_thumbnail_pressed(image: Image, image_save_path: String) -> void:
 
 ## TODO: Show a small popup that shows its anime's name and programming language.
 func _on_thumbnail_hovered(button: TextureButton) -> void:
-	var tween: Tween = create_tween()
-	tween.tween_property(button.get_child(0), "self_modulate", Color(1.125, 1.125, 1.125, 1.0), 0.15).set_ease(Tween.EASE_IN_OUT)
-	tween.tween_property(button.get_child(0), "scale", Vector2(1.125, 1.125), 0.25).set_ease(Tween.EASE_IN)
+	
+		if allow_animation == true:
+			var tween: Tween = create_tween()
+			tween.tween_property(button.get_child(0), "self_modulate", Color(1.125, 1.125, 1.125, 1.0), 0.15).set_ease(Tween.EASE_IN_OUT)
+			tween.tween_property(button.get_child(0), "scale", Vector2(1.125, 1.125), 0.25).set_ease(Tween.EASE_IN)
 
 
 ## TODO: Hide the small popup.
 func _on_thumbnail_unhover(button: TextureButton) -> void:
-	var tween: Tween = create_tween()
-	tween.tween_property(button.get_child(0), "self_modulate", Color(1.0, 1.0, 1.0, 1.0), 0.15).set_ease(Tween.EASE_OUT_IN)
-	tween.tween_property(button.get_child(0), "scale", Vector2(1.0, 1.0), 0.25).set_ease(Tween.EASE_OUT)
+	
+		if allow_animation == true:
+			var tween: Tween = create_tween()
+			tween.tween_property(button.get_child(0), "self_modulate", Color(1.0, 1.0, 1.0, 1.0), 0.15).set_ease(Tween.EASE_OUT_IN)
+			tween.tween_property(button.get_child(0), "scale", Vector2(1.0, 1.0), 0.25).set_ease(Tween.EASE_OUT)
 
 
 ## Sets TabContainer's tab buttons' cursor
@@ -516,21 +584,27 @@ func parse_JSON(body: PackedByteArray) -> Variant:
 func _on_meta_hover_entered(_meta: Variant, source: RichTextLabel) -> void:
 	is_hovered_meta = true
 	tooltip.size = Vector2.ZERO
-	tooltip.scale = Vector2.ZERO
-	tooltip.text = source.get_tooltip(source.get_local_mouse_position())
 	tooltip.show()
-	var tween: Tween = create_tween()
-	tween.tween_property(tooltip, "scale", Vector2.ONE, 0.15).set_trans(Tween.TRANS_BOUNCE)
+
+	if allow_animation == true:	
+		tooltip.scale = Vector2.ZERO
+		var tween: Tween = create_tween()
+		tween.tween_property(tooltip, "scale", Vector2.ONE, 0.15).set_trans(Tween.TRANS_BOUNCE)
+	else:
+		tooltip.scale = Vector2.ONE
+
+	tooltip.text = source.get_tooltip(source.get_local_mouse_position())
 
 
 ## The reverse of _on_meta_hover_entered() where it detects mouse exit.
 ## [param meta] is any object which will be executed by OS.shell_open().
 ## [param source] is the node which has this meta.
-func _on_meta_hover_exited(_meta: Variant, _source: RichTextLabel) -> void:
+func _on_meta_hover_exited(_meta: Variant) -> void:
 	is_hovered_meta = false
-	var tween: Tween = create_tween()
-	tween.tween_property(tooltip, "scale", Vector2.ZERO, 0.15).set_trans(Tween.TRANS_BOUNCE)
-	await tween.loop_finished
+	if allow_animation == true:
+		var tween: Tween = create_tween()
+		tween.tween_property(tooltip, "scale", Vector2.ZERO, 0.15).set_trans(Tween.TRANS_BOUNCE)
+		await tween.loop_finished
 	tooltip.hide()
 	tooltip.text = ""
 	tooltip.size = Vector2.ZERO
@@ -544,18 +618,24 @@ func _on_meta_clicked(meta: Variant) -> void:
 func _on_tab_hovered(tab: int, source: TabContainer) -> void:
 	is_hovered_meta = true
 	tooltip.size = Vector2.ZERO
-	tooltip.scale = Vector2.ZERO
-	tooltip.text = source.get_tab_metadata(tab)
 	tooltip.show()
-	var tween: Tween = create_tween()
-	tween.tween_property(tooltip, "scale", Vector2.ONE, 0.15).set_trans(Tween.TRANS_BOUNCE)
+
+	if allow_animation == true:	
+		tooltip.scale = Vector2.ZERO
+		var tween: Tween = create_tween()
+		tween.tween_property(tooltip, "scale", Vector2.ONE, 0.15).set_trans(Tween.TRANS_BOUNCE)
+	else:
+		tooltip.scale = Vector2.ONE
+
+	tooltip.text = source.get_tab_metadata(tab)
 
 
 func _on_tab_unhovered() -> void:
 	is_hovered_meta = false
-	var tween: Tween = create_tween()
-	tween.tween_property(tooltip, "scale", Vector2.ZERO, 0.15).set_trans(Tween.TRANS_BOUNCE)
-	await tween.finished
+	if allow_animation == true:
+		var tween: Tween = create_tween()
+		tween.tween_property(tooltip, "scale", Vector2.ZERO, 0.15).set_trans(Tween.TRANS_BOUNCE)
+		await tween.finished
 	tooltip.hide()
 	tooltip.text = ""
 	tooltip.size = Vector2.ZERO
@@ -572,7 +652,7 @@ func _process(_delta: float) -> void:
 func _on_child_entered_tree(node: Node, source: Node) -> void:
 	# Remove default tooltip to display custom tooltip only
 	if node is PopupPanel:
-		if source.name == "LogsText":
+		if source.name == "LogsText" or "Info":
 			node.queue_free()
 
 #endregion

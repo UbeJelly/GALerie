@@ -1,17 +1,7 @@
 [gd_scene format=3 uid="uid://2bmeoh87qyc4"]
 
 [ext_resource type="Script" uid="uid://cnwntvp1we6nb" path="res://GALerie.gd" id="1_l1wfd"]
-[ext_resource type="Theme" uid="uid://bkc76s4gpp0nu" path="res://Resources/Default.tres" id="2_vvdw2"]
-[ext_resource type="Script" uid="uid://wgc02f0axtjr" path="res://Resources/Roll.gd" id="3_vvdw2"]
-[ext_resource type="Script" uid="uid://dc5xi8tj2pyhh" path="res://Resources/Bounce.gd" id="4_uw21i"]
-
-[sub_resource type="RichTextEffect" id="RichTextEffect_uw21i"]
-script = ExtResource("3_vvdw2")
-metadata/_custom_type_script = "uid://wgc02f0axtjr"
-
-[sub_resource type="RichTextEffect" id="RichTextEffect_auvss"]
-script = ExtResource("4_uw21i")
-metadata/_custom_type_script = "uid://dc5xi8tj2pyhh"
+[ext_resource type="Theme" uid="uid://bkc76s4gpp0nu" path="res://Resources/Themes/Default/Main.tres" id="2_vvdw2"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_auvss"]
 draw_center = false
@@ -121,7 +111,6 @@ focus_mode = 2
 bbcode_enabled = true
 scroll_following = true
 context_menu_enabled = true
-custom_effects = [SubResource("RichTextEffect_uw21i"), SubResource("RichTextEffect_auvss")]
 threaded = true
 selection_enabled = true
 
@@ -192,6 +181,99 @@ text = "Prints log outputs on [font embolden=0.75][color=purple]Logs[/color][/fo
 fit_content = true
 scroll_active = false
 
+[node name="AnimationSettings" type="PanelContainer" parent="GUI/Margin/Sections/⚙️ Settings/Buttons" unique_id=125363627]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="GUI/Margin/Sections/⚙️ Settings/Buttons/AnimationSettings" unique_id=1136538641]
+layout_mode = 2
+
+[node name="Title" type="HBoxContainer" parent="GUI/Margin/Sections/⚙️ Settings/Buttons/AnimationSettings/VBox" unique_id=401268672]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="Main" type="RichTextLabel" parent="GUI/Margin/Sections/⚙️ Settings/Buttons/AnimationSettings/VBox/Title" unique_id=1847940204]
+clip_contents = false
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_auvss")
+bbcode_enabled = true
+text = "[font embolden=0.75 size=26][color=royal_blue]Animations[/color][/font]"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 2
+vertical_alignment = 2
+threaded = true
+
+[node name="Sub" type="RichTextLabel" parent="GUI/Margin/Sections/⚙️ Settings/Buttons/AnimationSettings/VBox/Title" unique_id=822082648]
+clip_contents = false
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxFlat_auvss")
+bbcode_enabled = true
+text = "[font size=20][color=web_gray]Settings that toggle animations like thumbnail hover effects and help hints.[/color][/font]"
+fit_content = true
+scroll_active = false
+vertical_alignment = 1
+threaded = true
+
+[node name="EnableAnimations" type="HBoxContainer" parent="GUI/Margin/Sections/⚙️ Settings/Buttons/AnimationSettings/VBox" unique_id=1251768365]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="EnableAnimationsButton" type="CheckButton" parent="GUI/Margin/Sections/⚙️ Settings/Buttons/AnimationSettings/VBox/EnableAnimations" unique_id=1382696693]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+focus_mode = 0
+mouse_filter = 2
+button_mask = 0
+shortcut_feedback = false
+shortcut_in_tooltip = false
+text = "Enable animations"
+alignment = 1
+
+[node name="Info" type="RichTextLabel" parent="GUI/Margin/Sections/⚙️ Settings/Buttons/AnimationSettings/VBox/EnableAnimations" unique_id=282746148]
+clip_contents = false
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxFlat_auvss")
+bbcode_enabled = true
+text = "Enable animations on [font embolden=0.75][color=purple]Browse[/color][/font] thumbnails, [font embolden=0.75][color=purple]Logs[/color][/font] texts, and more."
+fit_content = true
+scroll_active = false
+threaded = true
+
+[node name="FollowReducedMotions" type="HBoxContainer" parent="GUI/Margin/Sections/⚙️ Settings/Buttons/AnimationSettings/VBox" unique_id=1720670890]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="FollowReducedMotionsButton" type="CheckButton" parent="GUI/Margin/Sections/⚙️ Settings/Buttons/AnimationSettings/VBox/FollowReducedMotions" unique_id=267950748]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+focus_mode = 0
+mouse_filter = 2
+button_pressed = true
+button_mask = 0
+shortcut_feedback = false
+shortcut_in_tooltip = false
+text = "Follow reduced motions"
+alignment = 1
+
+[node name="Info" type="RichTextLabel" parent="GUI/Margin/Sections/⚙️ Settings/Buttons/AnimationSettings/VBox/FollowReducedMotions" unique_id=679591921]
+clip_contents = false
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxFlat_auvss")
+bbcode_enabled = true
+text = "Follows system's [url underline=always tooltip='Reduces or disables animations that may cause discomfort for users.
+This feature helps individuals with vestibular motion disorders or those who prefer less movement on their screens.']prefers-reduced-motions[/url] setting. Overrides [color=royal_blue]Enable animations[/color] setting."
+fit_content = true
+scroll_active = false
+threaded = true
+
 [node name="DeleteSettings" type="PanelContainer" parent="GUI/Margin/Sections/⚙️ Settings/Buttons" unique_id=1037661243]
 layout_mode = 2
 
@@ -215,6 +297,7 @@ scroll_active = false
 autowrap_mode = 0
 horizontal_alignment = 2
 vertical_alignment = 2
+threaded = true
 
 [node name="Sub" type="RichTextLabel" parent="GUI/Margin/Sections/⚙️ Settings/Buttons/DeleteSettings/VBox/Title" unique_id=67668501]
 clip_contents = false
@@ -226,6 +309,7 @@ text = "[font size=20][color=web_gray]Settings that delete certain types of loca
 fit_content = true
 scroll_active = false
 vertical_alignment = 1
+threaded = true
 
 [node name="TrashImageCache" type="HBoxContainer" parent="GUI/Margin/Sections/⚙️ Settings/Buttons/DeleteSettings/VBox" unique_id=1599583753]
 layout_mode = 2
@@ -246,6 +330,7 @@ bbcode_enabled = true
 text = "Moves image caches to trash. Caches save time by getting what's already available. Useful for managing cache."
 fit_content = true
 scroll_active = false
+threaded = true
 
 [node name="DeleteImageCache" type="HBoxContainer" parent="GUI/Margin/Sections/⚙️ Settings/Buttons/DeleteSettings/VBox" unique_id=1435347660]
 layout_mode = 2
@@ -263,9 +348,10 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/normal = SubResource("StyleBoxFlat_auvss")
 bbcode_enabled = true
-text = "[color=red]Permanently deletes[/color] the image cache. Useful to free memory."
+text = "[color=crimson]Permanently deletes[/color] the image cache. Useful to free memory."
 fit_content = true
 scroll_active = false
+threaded = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="GUI/Margin/Sections/⚙️ Settings/Buttons" unique_id=467479366]
 layout_mode = 2
@@ -293,8 +379,12 @@ threaded = true
 [connection signal="tab_hovered" from="GUI/Margin/Sections" to="." method="_on_tab_hovered" flags=18]
 [connection signal="child_entered_tree" from="GUI/Margin/Sections/📃 Logs/LogsText" to="." method="_on_child_entered_tree" flags=18]
 [connection signal="meta_clicked" from="GUI/Margin/Sections/📃 Logs/LogsText" to="." method="_on_meta_clicked"]
-[connection signal="meta_hover_ended" from="GUI/Margin/Sections/📃 Logs/LogsText" to="." method="_on_meta_hover_exited" flags=18]
+[connection signal="meta_hover_ended" from="GUI/Margin/Sections/📃 Logs/LogsText" to="." method="_on_meta_hover_exited"]
 [connection signal="meta_hover_started" from="GUI/Margin/Sections/📃 Logs/LogsText" to="." method="_on_meta_hover_entered" flags=18]
 [connection signal="toggled" from="GUI/Margin/Sections/⚙️ Settings/Buttons/LoggingSettings/VBox/PushLogOutput/PushLogOutputToggle" to="." method="_on_setting_toggled" flags=18]
+[connection signal="toggled" from="GUI/Margin/Sections/⚙️ Settings/Buttons/AnimationSettings/VBox/EnableAnimations/EnableAnimationsButton" to="." method="_on_setting_toggled" flags=18]
+[connection signal="child_entered_tree" from="GUI/Margin/Sections/⚙️ Settings/Buttons/AnimationSettings/VBox/FollowReducedMotions/Info" to="." method="_on_child_entered_tree" flags=18]
+[connection signal="meta_hover_ended" from="GUI/Margin/Sections/⚙️ Settings/Buttons/AnimationSettings/VBox/FollowReducedMotions/Info" to="." method="_on_meta_hover_exited"]
+[connection signal="meta_hover_started" from="GUI/Margin/Sections/⚙️ Settings/Buttons/AnimationSettings/VBox/FollowReducedMotions/Info" to="." method="_on_meta_hover_entered" flags=18]
 [connection signal="pressed" from="GUI/Margin/Sections/⚙️ Settings/Buttons/DeleteSettings/VBox/TrashImageCache/TrashImageCacheButton" to="." method="_on_button_pressed" flags=18]
 [connection signal="pressed" from="GUI/Margin/Sections/⚙️ Settings/Buttons/DeleteSettings/VBox/DeleteImageCache/DeleteImageCacheButton" to="." method="_on_button_pressed" flags=18]
