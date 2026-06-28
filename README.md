@@ -1,24 +1,21 @@
-# GALerie - Gals and Programming Books Gallery
+<p align="center">
+    <img src="Assets/GALerie_icon.png"><br>
+    Lite, fast anime girls x programming books gallery<br>
+</p>
 
-![browse_screenshot.png](.github/img/browse_screenshot.png)
+<h1>GALerie</h1>
 
-Fetches images of anime girls with programming books from https://github.com/cat-milk/Anime-Girls-Holding-Programming-Books thru Github REST API.
+Fetches images of anime girls holding programming books from https://github.com/cat-milk/Anime-Girls-Holding-Programming-Books thru Github REST API.
+
+<p align="center">
+    <img src=".github/img/browse_screenshot.png" alt="Screenshot of Browse section where it lists programming book buttons and shows images of anime girls with programming books in grid gallery arrangement.">
+</p>
 
 ## Usage
 
 You can click on a thumbnail to save the image at `~/Documents/GALerie/Anime_Girls`, and click on any languages to load its images.
 
 [preview.webm](https://github.com/user-attachments/assets/988913dd-b1b7-4811-bdd9-3ed21c9d069c)
-
-### Logs
-
-There's a `Logs` section where it keeps track of some things in the background. It also `print_rich()` on Godot's terminal but only with supported built-in effects, i.e. no custom effects.
-
-![logs_screenshot.png](.github/img/logs_screenshot.png)
-
-### Settings
-
-![settings_screenshot.png](.github/img/settings_screenshot.png)
 
 ## Features
 
@@ -29,6 +26,24 @@ There's a `Logs` section where it keeps track of some things in the background. 
 - [x] Animations - hover effects on thumbnails, tooltips pop in/out, custom effects on `Logs`.
 - [x] Accessibility - settings that allow most people to use the program with ease.
 - [x] Rate limit - mainly for testing purposes, but can also be applied on export. (see [Testing](#testing))
+
+### Logs
+
+It keeps track of some things happening in the background.
+
+![logs_screenshot.png](.github/img/logs_screenshot.png)
+
+### Settings
+
+Shows available options for the user to change to their preferences.
+
+![settings_screenshot.png](.github/img/settings_screenshot.png)
+
+### Help
+
+Contains guide, about, and licenses of the program.
+
+![help_screenshot.png](.github/img/help_screenshot.png)
 
 ### Accessibility
 

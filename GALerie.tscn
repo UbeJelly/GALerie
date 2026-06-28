@@ -2,9 +2,29 @@
 
 [ext_resource type="Script" uid="uid://cnwntvp1we6nb" path="res://GALerie.gd" id="1_l1wfd"]
 [ext_resource type="Theme" uid="uid://bkc76s4gpp0nu" path="res://Resources/Themes/Default/Main.tres" id="2_vvdw2"]
+[ext_resource type="StyleBox" uid="uid://vefvaa0hsem2" path="res://Resources/Themes/Default/EmptyBG.tres" id="3_vvdw2"]
+[ext_resource type="StyleBox" uid="uid://ba44w0gx1u3qo" path="res://Resources/Themes/Default/EmptyTab.tres" id="4_4ggqs"]
+[ext_resource type="Texture2D" uid="uid://chdndijsnyoqf" path="res://Assets/Textures/Author/0.png" id="4_6usci"]
+[ext_resource type="Texture2D" uid="uid://dycqp42u7xroq" path="res://Assets/Textures/Author/1.png" id="5_4ggqs"]
+[ext_resource type="Texture2D" uid="uid://1asjse5is74p" path="res://Assets/Textures/Author/2.png" id="6_261ja"]
+[ext_resource type="Texture2D" uid="uid://bsod2s3lw1uo4" path="res://Assets/Textures/Author/3.png" id="7_1mq3w"]
+[ext_resource type="Texture2D" uid="uid://dfk46seg6u8eb" path="res://Assets/Textures/Author/4.png" id="8_7r3k5"]
+[ext_resource type="Texture2D" uid="uid://d3ny3lbimmvo4" path="res://Assets/Textures/Author/5.png" id="9_gm33r"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_auvss"]
-draw_center = false
+[sub_resource type="AnimatedTexture" id="AnimatedTexture_vvdw2"]
+frames = 6
+speed_scale = 30.0
+frame_0/texture = ExtResource("4_6usci")
+frame_1/texture = ExtResource("5_4ggqs")
+frame_1/duration = 1.0
+frame_2/texture = ExtResource("6_261ja")
+frame_2/duration = 1.0
+frame_3/texture = ExtResource("7_1mq3w")
+frame_3/duration = 1.0
+frame_4/texture = ExtResource("8_7r3k5")
+frame_4/duration = 1.0
+frame_5/texture = ExtResource("9_gm33r")
+frame_5/duration = 1.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uw21i"]
 content_margin_left = 10.0
@@ -134,11 +154,11 @@ layout_mode = 2
 theme_override_constants/separation = 30
 
 [node name="Main" type="RichTextLabel" parent="GUI/Margin/Sections/⚙️ Settings/Buttons/LoggingSettings/VBox/Title" unique_id=65660577]
-clip_contents = false
 custom_minimum_size = Vector2(300, 0)
+clip_contents = false
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_styles/normal = SubResource("StyleBoxFlat_auvss")
+theme_override_styles/normal = ExtResource("3_vvdw2")
 bbcode_enabled = true
 text = "[font embolden=0.75 size=26][color=royal_blue]Log process[/color][/font]"
 fit_content = true
@@ -151,7 +171,7 @@ vertical_alignment = 2
 clip_contents = false
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/normal = SubResource("StyleBoxFlat_auvss")
+theme_override_styles/normal = ExtResource("3_vvdw2")
 bbcode_enabled = true
 text = "[font size=20][color=web_gray]Settings that keep logs of certain background events and user inputs.[/color][/font]"
 fit_content = true
@@ -175,7 +195,7 @@ alignment = 1
 clip_contents = false
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/normal = SubResource("StyleBoxFlat_auvss")
+theme_override_styles/normal = ExtResource("3_vvdw2")
 bbcode_enabled = true
 text = "Prints log outputs on [font embolden=0.75][color=purple]Logs[/color][/font] section. Useful for keeping track of information in the background."
 fit_content = true
@@ -192,11 +212,11 @@ layout_mode = 2
 theme_override_constants/separation = 30
 
 [node name="Main" type="RichTextLabel" parent="GUI/Margin/Sections/⚙️ Settings/Buttons/AnimationSettings/VBox/Title" unique_id=1847940204]
-clip_contents = false
 custom_minimum_size = Vector2(300, 0)
+clip_contents = false
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_styles/normal = SubResource("StyleBoxFlat_auvss")
+theme_override_styles/normal = ExtResource("3_vvdw2")
 bbcode_enabled = true
 text = "[font embolden=0.75 size=26][color=royal_blue]Animations[/color][/font]"
 fit_content = true
@@ -210,7 +230,7 @@ threaded = true
 clip_contents = false
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/normal = SubResource("StyleBoxFlat_auvss")
+theme_override_styles/normal = ExtResource("3_vvdw2")
 bbcode_enabled = true
 text = "[font size=20][color=web_gray]Settings that toggle animations like thumbnail hover effects and help hints.[/color][/font]"
 fit_content = true
@@ -235,7 +255,7 @@ alignment = 1
 clip_contents = false
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/normal = SubResource("StyleBoxFlat_auvss")
+theme_override_styles/normal = ExtResource("3_vvdw2")
 bbcode_enabled = true
 text = "Enable animations on [font embolden=0.75][color=purple]Browse[/color][/font] thumbnails, [font embolden=0.75][color=purple]Logs[/color][/font] texts, and more."
 fit_content = true
@@ -262,10 +282,10 @@ alignment = 1
 clip_contents = false
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/normal = SubResource("StyleBoxFlat_auvss")
+theme_override_styles/normal = ExtResource("3_vvdw2")
 bbcode_enabled = true
-text = "Follows system's [url underline=always tooltip='Reduces or disables animations that may cause discomfort for users.
-This feature helps individuals with vestibular motion disorders or those who prefer less movement on their screens.']prefers-reduced-motions[/url] setting. Overrides [color=royal_blue]Enable animations[/color] setting."
+text = "Follows system's [color=purple][url underline=hover tooltip='Reduces or disables animations that may cause discomfort for users.
+This feature helps individuals with vestibular motion disorders or those who prefer less movement on their screens.']prefers-reduced-motions[/url][/color] setting. Overrides [color=dim_gray]Enable animations[/color] setting."
 fit_content = true
 scroll_active = false
 threaded = true
@@ -281,11 +301,11 @@ layout_mode = 2
 theme_override_constants/separation = 30
 
 [node name="Main" type="RichTextLabel" parent="GUI/Margin/Sections/⚙️ Settings/Buttons/DeleteSettings/VBox/Title" unique_id=2049232183]
-clip_contents = false
 custom_minimum_size = Vector2(300, 0)
+clip_contents = false
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_styles/normal = SubResource("StyleBoxFlat_auvss")
+theme_override_styles/normal = ExtResource("3_vvdw2")
 bbcode_enabled = true
 text = "[font embolden=0.75 size=26][color=crimson]Delete data[/color][/font]"
 fit_content = true
@@ -299,7 +319,7 @@ threaded = true
 clip_contents = false
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/normal = SubResource("StyleBoxFlat_auvss")
+theme_override_styles/normal = ExtResource("3_vvdw2")
 bbcode_enabled = true
 text = "[font size=20][color=web_gray]Settings that delete certain types of locally saved data, e.g. images.[/color][/font]"
 fit_content = true
@@ -321,7 +341,7 @@ text = "Trash image cache"
 clip_contents = false
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/normal = SubResource("StyleBoxFlat_auvss")
+theme_override_styles/normal = ExtResource("3_vvdw2")
 bbcode_enabled = true
 text = "Moves image caches to trash. Caches save time by getting what's already available. Useful for managing cache."
 fit_content = true
@@ -342,7 +362,7 @@ text = "Delete image cache"
 clip_contents = false
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/normal = SubResource("StyleBoxFlat_auvss")
+theme_override_styles/normal = ExtResource("3_vvdw2")
 bbcode_enabled = true
 text = "[color=crimson]Permanently deletes[/color] the image cache. Useful to free memory."
 fit_content = true
@@ -351,6 +371,169 @@ threaded = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="GUI/Margin/Sections/⚙️ Settings/Buttons" unique_id=467479366]
 layout_mode = 2
+
+[node name="📚 Help" type="MarginContainer" parent="GUI/Margin/Sections" unique_id=2128156610]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 3
+metadata/tooltip_text = "Guide and about this program"
+
+[node name="Sections" type="HSplitContainer" parent="GUI/Margin/Sections/📚 Help" unique_id=964147197]
+layout_mode = 2
+split_offsets = PackedInt32Array(600)
+split_offset = 600
+
+[node name="Usage" type="PanelContainer" parent="GUI/Margin/Sections/📚 Help/Sections" unique_id=1444540472]
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="GUI/Margin/Sections/📚 Help/Sections/Usage" unique_id=175593297]
+layout_mode = 2
+
+[node name="Details" type="RichTextLabel" parent="GUI/Margin/Sections/📚 Help/Sections/Usage/Margin" unique_id=539287445]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+theme_override_styles/normal = ExtResource("3_vvdw2")
+bbcode_enabled = true
+text = "[font embolden=0.75 size=26][color=royal_blue]Using this program[/color][/font]
+[hr color=d8d8d8 height=2 width=100%]
+There are 4 sections namely [font embolden=0.75][color=purple]Browse[/color][/font], [font embolden=0.75][color=purple]Logs[/color][/font], [font embolden=0.75][color=purple]Settings[/color][/font], and [font embolden=0.75][color=purple]Help[/color][/font].[br]
+[ol]
+🔍 [font embolden=0.75][color=purple]Browse[/color][/font] has options to search and download images. You can click on any programming books at the left column, and save an image by clicking it.[br][br]
+📃 [font embolden=0.75][color=purple]Logs[/color][/font] displays details of what's happening in the background, like downloading and loading images. It also shows some user input details.[br][br]
+⚙️ [font embolden=0.75][color=purple]Settings[/color][/font] gives the user some options to adjust in order to use this program to their liking.[br][br]
+📚 [font embolden=0.75][color=purple]Help[/color][/font] shows details on how to use this program and what it's all about. You're looking at this section right now!
+[/ol][br]
+[p align=fill]				This program saves cache by default in order to save time requesting and loading images in later sessions. So if you need some space in memory you can access settings to manage caches.[/p]"
+
+[node name="About" type="PanelContainer" parent="GUI/Margin/Sections/📚 Help/Sections" unique_id=553701456]
+layout_mode = 2
+
+[node name="Sections" type="TabContainer" parent="GUI/Margin/Sections/📚 Help/Sections/About" unique_id=588211139 groups=["Tabs"]]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("4_4ggqs")
+current_tab = 0
+
+[node name="😎 About" type="ScrollContainer" parent="GUI/Margin/Sections/📚 Help/Sections/About/Sections" unique_id=42897207 groups=["Scrollbars"]]
+layout_mode = 2
+metadata/_tab_index = 0
+metadata/tooltip_text = "Details about the author"
+
+[node name="Center" type="CenterContainer" parent="GUI/Margin/Sections/📚 Help/Sections/About/Sections/😎 About" unique_id=864166139]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="About" type="VBoxContainer" parent="GUI/Margin/Sections/📚 Help/Sections/About/Sections/😎 About/Center" unique_id=2013836313]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ProfilePic" type="TextureRect" parent="GUI/Margin/Sections/📚 Help/Sections/About/Sections/😎 About/Center/About" unique_id=50358179]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+texture = SubResource("AnimatedTexture_vvdw2")
+stretch_mode = 4
+
+[node name="AuthorHandle" type="RichTextLabel" parent="GUI/Margin/Sections/📚 Help/Sections/About/Sections/😎 About/Center/About" unique_id=1014717870]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/normal = ExtResource("3_vvdw2")
+bbcode_enabled = true
+text = "GALerie v0.15.1 by [color=purple][url underline=hover tooltip='Visit Github profile' href=https://github.com/UbeJelly]@UbeJelly[/url][/color]"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 1
+threaded = true
+
+[node name="ProjectRepo" type="RichTextLabel" parent="GUI/Margin/Sections/📚 Help/Sections/About/Sections/😎 About/Center/About" unique_id=631290297]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/normal = ExtResource("3_vvdw2")
+bbcode_enabled = true
+text = "Project repo: [color=purple][url underline=hover tooltip='Visit project repository' href=https://github.com/UbeJelly/GALerie]https://github.com/UbeJelly/GALerie[/url][/color]"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 1
+threaded = true
+
+[node name="ImagesRepo" type="RichTextLabel" parent="GUI/Margin/Sections/📚 Help/Sections/About/Sections/😎 About/Center/About" unique_id=1405390688]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/normal = ExtResource("3_vvdw2")
+bbcode_enabled = true
+text = "[color=purple][url underline=hover tooltip='Visit project repository' href=https://github.com/cat-milk/Anime-Girls-Holding-Programming-Books]Anime Girls Holding Programming Books[/url][/color] by [color=purple][url underline=hover tooltip='Visit Github profile' href=https://github.com/cat-milk]@cat-milk[/url][/color]"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 1
+threaded = true
+
+[node name="MadeOf" type="RichTextLabel" parent="GUI/Margin/Sections/📚 Help/Sections/About/Sections/😎 About/Center/About" unique_id=1821924503]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/normal = ExtResource("3_vvdw2")
+bbcode_enabled = true
+text = "Made with [color=purple][url underline=hover tooltip='Visit website' href=https://godotengine.org/releases/4.7/]Godot Engine 4.7[/url][/color] and ☕💜"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 1
+threaded = true
+
+[node name="©️ License" type="ScrollContainer" parent="GUI/Margin/Sections/📚 Help/Sections/About/Sections" unique_id=1984766453 groups=["Scrollbars"]]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+metadata/tooltip_text = "Copyright license"
+
+[node name="Center" type="CenterContainer" parent="GUI/Margin/Sections/📚 Help/Sections/About/Sections/©️ License" unique_id=1847328163]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Program" type="RichTextLabel" parent="GUI/Margin/Sections/📚 Help/Sections/About/Sections/©️ License/Center" unique_id=1885269052]
+custom_minimum_size = Vector2(480, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/normal = ExtResource("3_vvdw2")
+text = "Copyright (c) 2026-present UbeJelly
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+fit_content = true
+scroll_active = false
+
+[node name="©️ Third-party Licenses" type="ScrollContainer" parent="GUI/Margin/Sections/📚 Help/Sections/About/Sections" unique_id=235975428 groups=["Scrollbars"]]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2
+metadata/tooltip_text = "Third-party copyright licenses"
+
+[node name="Center" type="CenterContainer" parent="GUI/Margin/Sections/📚 Help/Sections/About/Sections/©️ Third-party Licenses" unique_id=902393995]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Famicons" type="RichTextLabel" parent="GUI/Margin/Sections/📚 Help/Sections/About/Sections/©️ Third-party Licenses/Center" unique_id=1063843187]
+custom_minimum_size = Vector2(480, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/normal = ExtResource("3_vvdw2")
+text = "Copyright (c) 2022-present Family
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+fit_content = true
+scroll_active = false
 
 [node name="Tooltip" type="RichTextLabel" parent="GUI" unique_id=971041386]
 unique_name_in_owner = true
@@ -385,3 +568,24 @@ threaded = true
 [connection signal="meta_hover_started" from="GUI/Margin/Sections/⚙️ Settings/Buttons/AnimationSettings/VBox/FollowReducedMotions/Info" to="." method="_on_meta_hover_entered" flags=18]
 [connection signal="pressed" from="GUI/Margin/Sections/⚙️ Settings/Buttons/DeleteSettings/VBox/TrashImageCache/TrashImageCacheButton" to="." method="_on_button_pressed" flags=18]
 [connection signal="pressed" from="GUI/Margin/Sections/⚙️ Settings/Buttons/DeleteSettings/VBox/DeleteImageCache/DeleteImageCacheButton" to="." method="_on_button_pressed" flags=18]
+[connection signal="tab_hovered" from="GUI/Margin/Sections/📚 Help/Sections/About/Sections" to="." method="_on_tab_hovered" flags=18]
+[connection signal="child_entered_tree" from="GUI/Margin/Sections/📚 Help/Sections/About/Sections/😎 About/Center/About/AuthorHandle" to="." method="_on_child_entered_tree" flags=18]
+[connection signal="meta_clicked" from="GUI/Margin/Sections/📚 Help/Sections/About/Sections/😎 About/Center/About/AuthorHandle" to="." method="_on_meta_clicked"]
+[connection signal="meta_hover_ended" from="GUI/Margin/Sections/📚 Help/Sections/About/Sections/😎 About/Center/About/AuthorHandle" to="." method="_on_meta_hover_exited"]
+[connection signal="meta_hover_started" from="GUI/Margin/Sections/📚 Help/Sections/About/Sections/😎 About/Center/About/AuthorHandle" to="." method="_on_meta_hover_entered" flags=18]
+[connection signal="child_entered_tree" from="GUI/Margin/Sections/📚 Help/Sections/About/Sections/😎 About/Center/About/ProjectRepo" to="." method="_on_child_entered_tree" flags=18]
+[connection signal="meta_clicked" from="GUI/Margin/Sections/📚 Help/Sections/About/Sections/😎 About/Center/About/ProjectRepo" to="." method="_on_meta_clicked"]
+[connection signal="meta_hover_ended" from="GUI/Margin/Sections/📚 Help/Sections/About/Sections/😎 About/Center/About/ProjectRepo" to="." method="_on_meta_hover_exited"]
+[connection signal="meta_hover_started" from="GUI/Margin/Sections/📚 Help/Sections/About/Sections/😎 About/Center/About/ProjectRepo" to="." method="_on_meta_hover_entered" flags=18]
+[connection signal="child_entered_tree" from="GUI/Margin/Sections/📚 Help/Sections/About/Sections/😎 About/Center/About/ImagesRepo" to="." method="_on_child_entered_tree" flags=18]
+[connection signal="meta_clicked" from="GUI/Margin/Sections/📚 Help/Sections/About/Sections/😎 About/Center/About/ImagesRepo" to="." method="_on_meta_clicked"]
+[connection signal="meta_hover_ended" from="GUI/Margin/Sections/📚 Help/Sections/About/Sections/😎 About/Center/About/ImagesRepo" to="." method="_on_meta_hover_exited"]
+[connection signal="meta_hover_started" from="GUI/Margin/Sections/📚 Help/Sections/About/Sections/😎 About/Center/About/ImagesRepo" to="." method="_on_meta_hover_entered" flags=18]
+[connection signal="child_entered_tree" from="GUI/Margin/Sections/📚 Help/Sections/About/Sections/😎 About/Center/About/MadeOf" to="." method="_on_child_entered_tree" flags=18]
+[connection signal="meta_clicked" from="GUI/Margin/Sections/📚 Help/Sections/About/Sections/😎 About/Center/About/MadeOf" to="." method="_on_meta_clicked"]
+[connection signal="meta_hover_ended" from="GUI/Margin/Sections/📚 Help/Sections/About/Sections/😎 About/Center/About/MadeOf" to="." method="_on_meta_hover_exited"]
+[connection signal="meta_hover_started" from="GUI/Margin/Sections/📚 Help/Sections/About/Sections/😎 About/Center/About/MadeOf" to="." method="_on_meta_hover_entered" flags=18]
+[connection signal="child_entered_tree" from="GUI/Margin/Sections/📚 Help/Sections/About/Sections/©️ License/Center/Program" to="." method="_on_child_entered_tree" flags=18]
+[connection signal="meta_clicked" from="GUI/Margin/Sections/📚 Help/Sections/About/Sections/©️ License/Center/Program" to="." method="_on_meta_clicked"]
+[connection signal="meta_hover_ended" from="GUI/Margin/Sections/📚 Help/Sections/About/Sections/©️ License/Center/Program" to="." method="_on_meta_hover_exited"]
+[connection signal="meta_hover_started" from="GUI/Margin/Sections/📚 Help/Sections/About/Sections/©️ License/Center/Program" to="." method="_on_meta_hover_entered" flags=18]

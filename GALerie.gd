@@ -1,4 +1,7 @@
 @tool class_name GALerieClient extends HTTPRequest
+## GALerie v0.15.1 - Gals and Programming Books Gallery
+##
+## Fetches images of anime girls with programming books from [url]https://github.com/cat-milk/Anime-Girls-Holding-Programming-Books[/url] thru Github REST API.
 
 #region Variables
 
@@ -43,6 +46,7 @@ var headers := [
 @onready var animes: HFlowContainer = $%Gals
 @onready var logs_text: RichTextLabel = $%LogsText
 @onready var tooltip: RichTextLabel = $%Tooltip
+@onready var author_pfp: TextureRect = $%ProfilePic
 
 @onready var push_log_output_toggle: CheckButton = $%PushLogOutputToggle
 @onready var allow_animation_toggle: CheckButton = $%EnableAnimationsButton
@@ -101,7 +105,12 @@ func _on_setting_toggled(toggled_on: bool, source: BaseButton) -> void:
 			settings_values["allow_animation"] = allow_animation
 			bounce_fx._set("animated", allow_animation)
 			roll_fx._set("animated", allow_animation)
+			set_author_pfp(allow_animation)
 			save_settings(settings_values)
+
+
+func set_author_pfp(animated: bool) -> void:
+	author_pfp.texture.pause = !animated
 
 
 func _init_settings() -> void:
@@ -160,6 +169,8 @@ func _init_settings() -> void:
 		allow_animation_toggle.button_pressed = false
 		bounce_fx._set("animated", false)
 		roll_fx._set("animated", false)
+
+	set_author_pfp(allow_animation)
 
 #endregion
 
@@ -240,23 +251,28 @@ func GALerieClient(url: String, endpoint: String, method: String) -> void:
 				if not method == "get_repo_tree":
 					newline = "\n"
 
-				var endpoint_log := "%sRequest endpoint: %s" % [newline, url + endpoint]
-				var success_run := "[color=%s][b]✓[/b] %s() run successfully.[/color]"
+				var endpoint_log := "{newline}Request endpoint: {url}"
+				var success_run := "[color={color}][b]✓[/b] {method}() run successfully.[/color]"
 
-				format_output_prints(endpoint_log, [""], [""])
-				format_output_prints(success_run, ["green", method], ["2aa300", method])
+				format_output_prints(
+					endpoint_log,
+					{ "newline": newline, "url": url+endpoint },
+					{ "newline": newline, "url": url+endpoint })
+				format_output_prints(
+					success_run,
+					{ "color": "green", "method": method },
+					{ "color": "2aa300", "method": method })
 		else:
 			if push_log_output == true:
 				format_output_prints(
-					"[color=%s][b]❌[/b] %s() failed.[/color]",
-					["red", method], ["cc0000", method]
-				)
+					"[color={color}][b]❌[/b] {method}() failed.[/color]",
+					{ "color": "red", "method": method },
+					{ "color": "cc0000", "method": method })
 	else:
 		if push_log_output == true:
 			format_output_prints(
-				"[color=%s][b]❌[/b] GALerie() failed. The url or endpoint cannot be empty.",
-				["red"], ["cc0000"]
-			)
+				"[color={color}][b]❌[/b] GALerie() failed. The url or endpoint cannot be empty.",
+				{ "color": "red" }, { "color": "cc0000" })
 
 
 ## Returns a Dictionary of trees, i.e. directories in a repo branch.
@@ -281,10 +297,13 @@ func get_anime_blob(endpoint: String, blob_name: String) -> void:
 
 	if push_log_output == true:
 		format_output_prints(
-			"%sDownloading %s blob%s",
-			["", blob_name, "[wave]...[/wave]"],
-			[" [roll][b][i] )[/i][/b][/roll]  ", blob_name, " [bounce]...[/bounce]"]
-		)
+			"{icon}Downloading {name} blob{dots}",
+			{
+				"icon": "", "name": blob_name, "dots": "[wave]...[/wave]"
+			},{
+				"icon": " [roll][b][i] )[/i][/b][/roll]  ",
+				"name": blob_name, "dots": "[bounce]...[/bounce]"
+			})
 
 #endregion
 
@@ -389,15 +408,58 @@ func set_thumbnail_texture(index: int) -> void:
 
 		else:
 			image_name = i_url[index]["path"]
+			if push_log_output == true:
+				format_output_prints(
+					"\n[color={color}][b]✓[/b][/color] Cache found for {name}. Loading it as texture{dots}",
+					{
+						"color": "green",
+						"name": image_name.get_file(),
+						"dots": "[wave]...[/wave]"
+					}, {
+						"color": "2aa300",
+						"name": image_name.get_file(),
+						"dots": "[bounce]...[/bounce]"
+					})
+
 			texture = load(cache_path+"/%s.res" % image_name)
+			if push_log_output == true:
+				format_output_prints(
+					"[color={color}][b]✓[/b][/color] Texture {name} loaded. Applying thumbnail texture{dots}",
+					{
+						"color": "green",
+						"name": image_name.get_file(),
+						"dots": "[wave]...[/wave]"
+					}, {
+						"color": "2aa300",
+						"name": image_name.get_file(),
+						"dots": "[bounce]...[/bounce]"
+					})
+
 			thumbnail_texture.texture = texture
+			if push_log_output == true:
+				format_output_prints(
+					"[color={color}][b]✓[/b][/color] Thumbnail {name} loaded successfully.",
+					{
+						"color": "green",
+						"name": image_name.get_file().replace(
+							"."+image_name.get_extension(), "")
+					}, {
+						"color": "2aa300",
+						"name": image_name.get_file()
+					})
 
 		if push_log_output == true:
 			format_output_prints(
-				"%sLoading %s thumbnail%s...%s",
-				["", image_name.get_file(), "[wave]", "[/wave]"],
-				[" [roll][b][i] )[/i][/b][/roll]  ", image_name.get_file(), " [bounce]", "[/bounce]"]
-			)
+				"{icon}Loading {name} thumbnail{dots}",
+				{
+					"icon": "",
+					"name": image_name.get_file(),
+					"dots": "[wave]...[/wave]"
+				}, {
+					"icon": " [roll][b][i] )[/i][/b][/roll]  ",
+					"name": image_name.get_file(),
+					"dots": "[bounce]...[/bounce]"
+				})
 
 		# Bind _on_thumbnail_pressed & its args to TextureButton.pressed signal
 		thumbnail.pressed.connect(_on_thumbnail_pressed.bind(texture.get_image(), anime_path+"/"+image_name))
@@ -435,10 +497,9 @@ func set_thumbnail_texture(index: int) -> void:
 
 		if push_log_output == true:
 			format_output_prints(
-				"[color=%s][b]✓[/b][/color] %s thumbnail loaded successfully.",
-				["green", image_name.get_file()],
-				["2aa300", image_name.get_file()]
-			)
+				"[color={color}][b]✓[/b][/color] {name} thumbnail loaded successfully.",
+				{ "color": "green", "name": image_name.get_file() },
+				{ "color": "2aa300", "name": image_name.get_file()})
 
 		thumbnail_texture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		thumbnail_texture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
@@ -517,7 +578,7 @@ func _on_thumbnail_pressed(image: Image, image_save_path: String) -> void:
 	}
 	var format: String = paths["format"]
 	var error: int = ERR_INVALID_DATA
-	var error_msg: String= "\n%s"+paths["name"]+"%s"+paths["dir"]+"%s"
+	var error_msg: String= "\n{status}"+paths["name"]+"{on}"+paths["dir"]+"{end}"
 
 	match format:
 		"png": error = image.save_png(image_save_path)
@@ -528,18 +589,40 @@ func _on_thumbnail_pressed(image: Image, image_save_path: String) -> void:
 	if error == OK:
 		if push_log_output == true:
 			format_output_prints(
-				error_msg,
-				["[color=green][b]✓ Successfully saved[/b][/color] [url underline=always tooltip='View image' href={file}]".format(paths), "[/url] on [url underline=always tooltip='Open folder' href={dir}]".format(paths), "[/url]\n"],
-				["[color=2aa300][b]✓ Successfully saved[/b][/color] [url underline=always tooltip='View image' href={file}]".format(paths), "[/url] on [url underline=always tooltip='Open folder' href={dir}]".format(paths), "[/url]\n"]
-			)
+				error_msg, {
+					"status":\
+						"[color=green][b]✓ Successfully saved[/b][/color] [url underline=always tooltip='View image' href={file}]".format(paths),
+					"on":\
+						"[/url] on [url underline=always tooltip='Open folder' href={dir}]".format(paths),
+					"end":\
+						"[/url]\n"
+				}, {
+					"status":\
+						"[color=2aa300][b]✓ Successfully saved[/b][/color] [url underline=always tooltip='View image' href={file}]".format(paths),
+					"on":\
+						"[/url] on [url underline=always tooltip='Open folder' href={dir}]".format(paths),
+					"end":\
+						"[/url]\n"
+				})
 
 	else:
 		if push_log_output == true:
 			format_output_prints(
-				error_msg,
-				["[color=red][b]❌ Failed to save[/b][/color] ", " on ", "\n"],
-				["[color=cc0000][b]❌ Failed to save[/b][/color] ", " on ", "\n"]
-			)
+				error_msg, {
+					"status":\
+						"[color=red][b]❌ Failed to save[/b][/color] ",
+					"on":\
+						" on ",
+					"end":\
+						"\n"
+				}, {
+					"status":\
+						"[color=cc0000][b]❌ Failed to save[/b][/color] ",
+					"on":\
+						" on ",
+					"end":\
+						"\n"
+				})
 
 
 func _on_thumbnail_hovered(button: TextureButton) -> void:
@@ -662,6 +745,7 @@ func _on_meta_hover_exited(_meta: Variant) -> void:
 
 
 func _on_meta_clicked(meta: Variant) -> void:
+	print(meta)
 	OS.shell_open(meta)
 
 
@@ -703,9 +787,8 @@ func _process(_delta: float) -> void:
 
 func _on_child_entered_tree(node: Node, source: Node) -> void:
 	# Remove default tooltip to display custom tooltip only
-	if node is PopupPanel:
-		if source.name == "LogsText" or "Info":
-			node.queue_free()
+	if node is PopupPanel and not source == null:
+		node.queue_free()
 
 #endregion
 
@@ -742,13 +825,13 @@ func delete_cached_files(path: String) -> void:
 ## The 2 array of args are used for separate functions: print_rich() and push_logs().
 ## [param godot_console_args] is an array which string in the Godot console would format from i.e. %s will substituted with any values.
 ## [param logst_text_args] is an array which string in the Logs would format from i.e. %s will be substituted with any values.
-func format_output_prints(string: String, godot_console_args: Array, logs_text_args: Array) -> void:
-	if not "%s" in string:
+func format_output_prints(string: String, godot_console_args: Dictionary, logs_text_args: Dictionary) -> void:
+	if godot_console_args.is_empty() or logs_text_args.is_empty():
 		print_rich(string)
 		push_logs(string)
 	else:
-		print_rich(string % godot_console_args)
-		push_logs(string % logs_text_args)
+		print_rich(string.format(godot_console_args))
+		push_logs(string.format(logs_text_args))
 
 
 func _on_Browse_Gals_resized(source: Control) -> void:
