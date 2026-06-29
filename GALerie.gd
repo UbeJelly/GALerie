@@ -1,5 +1,5 @@
 @tool class_name GALerieClient extends HTTPRequest
-## GALerie v0.16.4 - Gals and Programming Books Gallery
+## GALerie v0.17.1 - Gals and Programming Books Gallery
 ##
 ## Fetches images of anime girls with programming books from [url]https://github.com/cat-milk/Anime-Girls-Holding-Programming-Books[/url] thru Github REST API.
 
@@ -747,7 +747,7 @@ func parse_JSON(body: PackedByteArray) -> Variant:
 
 #region Hover/click events
 
-## Reusable signal callable for any hoverable nodes with metadata.
+## Reusable signal callable for any RichTextLabel with metadata.
 ## [param meta] is any object which will be executed by OS.shell_open().
 ## [param source] is the node which has this meta.
 func _on_meta_hover_entered(_meta: Variant, source: RichTextLabel) -> void:
@@ -831,43 +831,66 @@ func _on_child_entered_tree(node: Node, source: Node) -> void:
 
 func _on_button_pressed(source: BaseButton) -> void:
 	match source.name:
-		"TrashSavedImageButton":
-			if remove_image_files(anime_path, Remove.TRASH) == OK:
-				format_output_prints(
-					"\n[color={color}]MOVED TO TRASH[/color] saved images.",
-					{ "color": "red" }, { "color": "crimson" })
-		"DeleteSavedImageButton":
-			if remove_image_files(anime_path, Remove.DELETE) == OK:
-				format_output_prints(
-					"\n[color={color}]PERMANENTLY DELETED[/color] saved images.",
-					{ "color": "red" }, { "color": "crimson" })
-		"TrashImageCacheButton":
-			if remove_image_files(cache_path, Remove.TRASH) == OK:
-				format_output_prints(
-					"\n[color={color}]MOVED TO TRASH[/color] image caches.",
-					{ "color": "red" }, { "color": "crimson" })
-		"DeleteImageCacheButton":
-			if remove_image_files(cache_path, Remove.DELETE) == OK:
-				format_output_prints(
-					"\n[color={color}]PERMANENTLY DELETED[/color] image caches.",
-					{ "color": "red" }, { "color": "crimson" })
+		"TrashSavedImageButton":	remove_image_files(anime_path, Remove.TRASH)
+		"DeleteSavedImageButton":	remove_image_files(anime_path, Remove.DELETE)
+		"TrashImageCacheButton":	remove_image_files(cache_path, Remove.TRASH)
+		"DeleteImageCacheButton":	remove_image_files(cache_path, Remove.DELETE)
+		"OpenImagesDir":			open_images_folder(anime_path)
+		"OpenCachesDir":			open_images_folder(cache_path)
 
 
-## Moves to trash or removes the saved images or caches on a path depending on the mode. Returns OK if successful.
+## Opens the saved images or caches directory depending on the mode.
+## [param path] is the directory of the saved or cached images.
+func open_images_folder(path: String) -> void:
+	var dir_name = path.get_basename()
+	var error: Error = ERR_FILE_BAD_PATH
+
+	if "Anime_Girls" in dir_name: dir_name = "saved"
+	elif "cache" in dir_name: dir_name = "cached"
+
+	error = OS.shell_show_in_file_manager(path, true)
+
+	if error == OK: if push_log_output == true:
+		format_output_prints(
+			"[color={color}][b]✓[/b][/color] Opened {type} images folder successfully.",
+			{ "color": "green", "type": dir_name },
+			{ "color": "forest_green", "type": dir_name })
+	else: if push_log_output == true:
+		format_output_prints(
+			"[color={color}][b]❌ Failed to open[/b][/color] {type} images folder.",
+			{ "color": "red", "type": dir_name },
+			{ "color": "crimson", "type": dir_name })
+
+
+## Moves to trash or removes the saved images or caches on a path depending on the mode.
 ## [param path] is the directory of the saved or cached images.
 ## [param mode] is the type of removal, i.e. trash to bin or permanent deletion. 
-func remove_image_files(path: String, mode: int) -> Error:
+func remove_image_files(path: String, mode: int) -> void:
 	var dir = DirAccess.open(path)
+	var dir_name = path.get_basename()
 	var error: Error = ERR_FILE_BAD_PATH
+
+	if "Anime_Girls" in dir_name: dir_name = "saved"
+	elif "cache" in dir_name: dir_name = "cached"
+
 	match mode:
 		Remove.TRASH:
 			if dir: for file in dir.get_files():
 				error = OS.move_to_trash(
 						ProjectSettings.globalize_path(path+"/"+file))
+			if error == OK: if push_log_output == true:
+				format_output_prints(
+					"\n[color={color}]MOVED TO TRASH[/color] {type} images.",
+					{ "color": "red", "type": dir_name },
+					{ "color": "crimson", "type": dir_name })
 		Remove.DELETE:
 			if dir: for file in dir.get_files():
 				error = dir.remove(ProjectSettings.globalize_path("./"+file))
-	return error
+			if error == OK: if push_log_output == true:
+				format_output_prints(
+					"\n[color={color}]PERMANENTLY DELETED[/color] {type} images.",
+					{ "color": "red", "type": dir_name },
+					{ "color": "crimson", "type": dir_name })
 
 
 ## Formats the string outputs for the Godot console and Logs' RichTextLabel.

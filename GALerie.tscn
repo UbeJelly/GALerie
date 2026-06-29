@@ -487,7 +487,7 @@ layout_mode = 2
 size_flags_horizontal = 4
 theme_override_styles/normal = ExtResource("3_vvdw2")
 bbcode_enabled = true
-text = "GALerie v0.16.4 by [color=purple][url underline=hover tooltip='Visit Github profile' href=https://github.com/UbeJelly]@UbeJelly[/url][/color]"
+text = "GALerie v0.17.1 by [color=purple][url underline=hover tooltip='Visit Github profile' href=https://github.com/UbeJelly]@UbeJelly[/url][/color]"
 fit_content = true
 scroll_active = false
 autowrap_mode = 0
@@ -626,6 +626,16 @@ fit_content = true
 scroll_active = false
 autowrap_mode = 0
 
+[node name="OpenImagesDir" type="Button" parent="GUI/Margin/VBox/StatusBar" unique_id=587546798]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "📁 Open images folder"
+
+[node name="OpenCachesDir" type="Button" parent="GUI/Margin/VBox/StatusBar" unique_id=302373091]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "📁 Open caches folder"
+
 [node name="Tooltip" type="RichTextLabel" parent="GUI" unique_id=971041386]
 unique_name_in_owner = true
 visible = false
@@ -682,3 +692,5 @@ threaded = true
 [connection signal="meta_clicked" from="GUI/Margin/VBox/Sections/📚 Help/Sections/About/Sections/©️ License/Center/Program" to="." method="_on_meta_clicked"]
 [connection signal="meta_hover_ended" from="GUI/Margin/VBox/Sections/📚 Help/Sections/About/Sections/©️ License/Center/Program" to="." method="_on_meta_hover_exited"]
 [connection signal="meta_hover_started" from="GUI/Margin/VBox/Sections/📚 Help/Sections/About/Sections/©️ License/Center/Program" to="." method="_on_meta_hover_entered" flags=18]
+[connection signal="pressed" from="GUI/Margin/VBox/StatusBar/OpenImagesDir" to="." method="_on_button_pressed" flags=18]
+[connection signal="pressed" from="GUI/Margin/VBox/StatusBar/OpenCachesDir" to="." method="_on_button_pressed" flags=18]
