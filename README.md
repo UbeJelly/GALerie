@@ -15,8 +15,6 @@ Fetches images of anime girls holding programming books from https://github.com/
 
 You can click on a thumbnail to save the image at `~/Documents/GALerie/Anime_Girls`, and click on any languages to load its images.
 
-[preview.webm](https://github.com/user-attachments/assets/988913dd-b1b7-4811-bdd9-3ed21c9d069c)
-
 ## Features
 
 - [x] Browse - shows the programming books and anime girls to choose and download from.
@@ -26,24 +24,12 @@ You can click on a thumbnail to save the image at `~/Documents/GALerie/Anime_Gir
 - [x] Animations - hover effects on thumbnails, tooltips pop in/out, custom effects on `Logs`.
 - [x] Accessibility - settings that allow most people to use the program with ease.
 - [x] Rate limit - mainly for testing purposes, but can also be applied on export. (see [Testing](#testing))
+- [x] Live preview - buttons and thumbnails show at Editor startup and they don't affect the node tree.
 
-### Logs
+![editor_debug_screenshot.png](.github/img/editor_debug_screenshot.png) 
 
-It keeps track of some things happening in the background.
-
-![logs_screenshot.png](.github/img/logs_screenshot.png)
-
-### Settings
-
-Shows available options for the user to change to their preferences.
-
-![settings_screenshot.png](.github/img/settings_screenshot.png)
-
-### Help
-
-Contains guide, about, and licenses of the program.
-
-![help_screenshot.png](.github/img/help_screenshot.png)
+| ![logs_screenshot.png](.github/img/logs_screenshot.png) | ![settings_screenshot.png](.github/img/settings_screenshot.png) | ![help_screenshot.png](.github/img/help_screenshot.png) |
+|-|-|-|
 
 ### Accessibility
 
