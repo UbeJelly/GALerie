@@ -1,5 +1,5 @@
 @tool class_name GALerieClient extends HTTPRequest
-## GALerie v0.16.2 - Gals and Programming Books Gallery
+## GALerie v0.16.3 - Gals and Programming Books Gallery
 ##
 ## Fetches images of anime girls with programming books from [url]https://github.com/cat-milk/Anime-Girls-Holding-Programming-Books[/url] thru Github REST API.
 
@@ -11,6 +11,7 @@ var is_hovered_meta := false	## Toggles on hover [url]; for tooltips
 var push_log_output := true		## Toggles log output setting
 var allow_animation := true		## Toggles animations setting
 var sync_no_motions := false	## Follows system's prefers-reduced-motion
+var show_status_bar := true		## Toggles StatusBar visibility
 var settings_values := {
 	"push_log_output": push_log_output,
 	"allow_animation": allow_animation,
@@ -47,6 +48,7 @@ var headers := [
 @onready var logs_text: RichTextLabel = $%LogsText
 @onready var tooltip: RichTextLabel = $%Tooltip
 @onready var author_pfp: TextureRect = $%ProfilePic
+@onready var status_bar: HBoxContainer = $%StatusBar
 
 @onready var saved_count: RichTextLabel = $%SavedCount
 @onready var saved_sizes: RichTextLabel = $%SavedSize
@@ -95,7 +97,8 @@ func load_settings(save_file: String) -> Dictionary:
 
 ## Pushes terminal outputs on Logs section.
 func push_logs(text: String) -> void:
-	logs_text.text += text+"\n"
+	if not Engine.is_editor_hint():
+		logs_text.text += text+"\n"
 
 
 func _on_setting_toggled(toggled_on: bool, source: BaseButton) -> void:
@@ -119,27 +122,28 @@ func set_author_pfp(animated: bool) -> void:
 
 
 func set_status_bar(download_path: String, caching_path: String) -> void:
-	var download_dir = DirAccess.open(download_path)
-	var download_dir_count: int = download_dir.get_files().size()
-	var download_file_size: int = 0
-	saved_count.text = "Saved images: %s" % download_dir_count
+	if not Engine.is_editor_hint():
+		var download_dir = DirAccess.open(download_path)
+		var download_dir_count: int = download_dir.get_files().size()
+		var download_file_size: int = 0
+		saved_count.text = "Saved images: %s" % download_dir_count
 
-	if download_dir:
-		for file in download_dir.get_files():
-			download_file_size += FileAccess.get_size(download_path+"/"+file)
+		if download_dir:
+			for file in download_dir.get_files():
+				download_file_size += FileAccess.get_size(download_path+"/"+file)
 
-	saved_sizes.text = "Saved size: %s" % String.humanize_size(download_file_size).replacen("iB", "B")
+		saved_sizes.text = "Saved size: %s" % String.humanize_size(download_file_size).replacen("iB", "B")
 
-	var caching_dir = DirAccess.open(caching_path)
-	var caching_dir_count: int = caching_dir.get_files().size()
-	var caching_file_size: int = 0
-	cache_count.text = "Cached images: %s" % caching_dir_count
+		var caching_dir = DirAccess.open(caching_path)
+		var caching_dir_count: int = caching_dir.get_files().size()
+		var caching_file_size: int = 0
+		cache_count.text = "Cached images: %s" % caching_dir_count
 
-	if caching_dir:
-		for file in caching_dir.get_files():
-			caching_file_size += FileAccess.get_size(caching_path+"/"+file)
+		if caching_dir:
+			for file in caching_dir.get_files():
+				caching_file_size += FileAccess.get_size(caching_path+"/"+file)
 
-	cache_sizes.text = "Cache size: %s" % String.humanize_size(caching_file_size).replacen("iB", "B")
+		cache_sizes.text = "Cache size: %s" % String.humanize_size(caching_file_size).replacen("iB", "B")
 
 
 func _init_settings() -> void:
@@ -200,9 +204,7 @@ func _init_settings() -> void:
 		roll_fx._set("animated", false)
 
 	set_author_pfp(allow_animation)
-
-	if not Engine.is_editor_hint():
-		set_status_bar(anime_path, cache_path)
+	set_status_bar(anime_path, cache_path)
 
 #endregion
 
@@ -254,16 +256,15 @@ func _ready() -> void:
 	set_tabs()
 	set_bars()
 
-	if not Engine.is_editor_hint():
-		get_repo_tree()
-		await request_completed
-		set_langs_buttons(trees)
+	get_repo_tree()
+	await request_completed
+	set_langs_buttons(trees)
 
-		var endpoint: String = trees[randi_range(0, trees.size()-1)]["url"].trim_prefix(git_url)
-		get_language(endpoint)
-		await request_completed
+	var endpoint: String = trees[randi_range(0, trees.size()-1)]["url"].trim_prefix(git_url)
+	get_language(endpoint)
+	await request_completed
 
-		set_anime_thumbnails(i_url)
+	set_anime_thumbnails(i_url)
 
 #endregion
 
