@@ -490,7 +490,7 @@ layout_mode = 2
 size_flags_horizontal = 4
 theme_override_styles/normal = ExtResource("3_vvdw2")
 bbcode_enabled = true
-text = "GALerie v0.19.6 by [color=purple][url underline=hover tooltip='Visit Github profile' href=https://github.com/UbeJelly]@UbeJelly[/url][/color]"
+text = "GALerie v0.19.7 by [color=purple][url underline=hover tooltip='Visit Github profile' href=https://github.com/UbeJelly]@UbeJelly[/url][/color]"
 fit_content = true
 scroll_active = false
 autowrap_mode = 0
@@ -667,7 +667,7 @@ layout_mode = 2
 focus_mode = 2
 theme_override_styles/normal = ExtResource("3_vvdw2")
 bbcode_enabled = true
-text = "[color=purple][url underline=hover tooltip='Visit Github repo' href=https://github.com/UbeJelly/GALerie]v0.19.6[/url][/color]"
+text = "[color=purple][url underline=hover tooltip='Visit Github repo' href=https://github.com/UbeJelly/GALerie]v0.19.7[/url][/color]"
 fit_content = true
 scroll_active = false
 autowrap_mode = 0

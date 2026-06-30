@@ -1,5 +1,5 @@
 @tool class_name GALerieClient extends HTTPRequest
-## GALerie v0.19.6 - Gals and Programming Books Gallery
+## GALerie v0.19.7 - Gals and Programming Books Gallery
 ##
 ## Fetches images of anime girls with programming books from [url]https://github.com/cat-milk/Anime-Girls-Holding-Programming-Books[/url] thru Github REST API.
 
@@ -41,7 +41,7 @@ var headers := [
 
 @export_category("Debug")
 @export var load_nodes := true		## Load buttons and thumbnails at Editor load.
-@export var source_ver := "v0.19.6"	## Current source version.
+@export var source_ver := "v0.19.7"	## Current source version.
 
 @export_category("Terminal")
 @export var print_data := false		## Show or hide the requested data.
@@ -569,9 +569,12 @@ func set_thumbnail_texture(index: int) -> void:
 
 		animes.add_child(thumbnail, true)
 
-		var tween: Tween = create_tween()
-		tween.tween_property(thumbnail, "offset_transform_scale", Vector2.ONE, 0.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
-		await tween.loop_finished
+		if allow_animation == true:
+			var tween: Tween = create_tween()
+			tween.tween_property(thumbnail, "offset_transform_scale", Vector2.ONE, 0.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+			await tween.loop_finished
+		else:
+			thumbnail.offset_transform_scale = Vector2.ONE
 
 #endregion
 
